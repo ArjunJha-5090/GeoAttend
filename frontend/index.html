@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoAttend — Mark Attendance</title>
+  <meta name="description"
+    content="Mark your attendance via GPS geofencing. Powered by C++ OOP backend and Supabase." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar">
+    <div class="nav-logo"><span class="icon">📍</span> GeoAttend</div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span id="userNavName" style="color:var(--text-muted);font-size:0.85rem;"></span>
+      <a href="student-dashboard.html" class="nav-link">Dashboard</a>
+      <button class="btn btn-outline" onclick="doSignOut()" style="padding:8px 16px;font-size:0.85rem;">Sign
+        Out</button>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" style="min-height:55vh;">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-badge">📡 GPS-Powered Geofenced Attendance</div>
+      <h1 class="hero-title" style="font-size: clamp(2.2rem, 5vw, 4rem);">
+        Mark Your<br /><span class="gradient-text">Attendance</span>
+      </h1>
+      <p class="hero-subtitle" style="font-size:1rem;">
+        A teacher must start a session first. You must be within <strong>100 metres</strong> to check in.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== MARK ATTENDANCE SECTION ========== -->
+  <section style="padding: 0 20px 80px;">
+    <div style="max-width: 520px; margin: 0 auto;">
+
+      <!-- Session Status Banner -->
+      <div id="sessionBanner" class="card" style="margin-bottom:20px; display:none;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span id="sessionDot"
+            style="width:10px;height:10px;border-radius:50%;background:var(--safe);display:inline-block;animation:pulse 1.5s infinite;"></span>
+          <span id="sessionStatusText" style="font-weight:600;font-size:0.95rem;">Checking for active session...</span>
+        </div>
+        <p id="sessionSubtext" style="color:var(--text-muted);font-size:0.83rem;margin-top:6px;"></p>
+      </div>
+
+      <!-- No Session Warning -->
+      <div id="noSessionBanner" class="alert alert-warning show" style="margin-bottom:20px;display:none;">
+        <span>⚠️</span>
+        <span>No active session. Ask your teacher to start attendance first.</span>
+      </div>
+
+      <!-- Attendance Card -->
+      <div class="attend-card">
+        <h3>📍 Mark My Attendance</h3>
+        <p>Your GPS will be cross-checked with the teacher's location. You must be within <b>100m</b>.</p>
+
+        <!-- Student Info -->
+        <div class="form-row" style="margin-bottom:20px;">
+          <div class="location-info" id="locationInfo">
+            <span class="dot"></span>
+            <span id="locationText">GPS location will be fetched when you mark attendance</span>
+          </div>
+        </div>
+
+        <!-- Distance from teacher (shown after GPS) -->
+        <div id="distanceInfo" style="display:none; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-size:0.85rem;color:var(--text-muted);">Distance from teacher</span>
+            <span id="distanceValue" style="font-size:0.85rem;font-weight:600;"></span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="distanceBar" style="width:0%;background:var(--gradient-hero);"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;">
+            <span style="font-size:0.72rem;color:var(--text-subtle)">0m (Here)</span>
+            <span style="font-size:0.72rem;color:var(--safe)">100m (Limit)</span>
+          </div>
+        </div>
+
+        <!-- Alert -->
+        <div id="alertBox" class="alert"></div>
+        <div style="height:16px;"></div>
+
+        <!-- Mark Button -->
+        <button class="btn btn-primary" id="markBtn" onclick="markAttendance()"
+          style="width:100%;font-size:1rem;padding:16px;">
+          <span id="markBtnText">🎯 Mark Attendance</span>
+          <div class="spinner" id="markSpinner"></div>
+        </button>
+
+        <!-- Already Marked -->
+        <div id="alreadyMarked" style="display:none;text-align:center;margin-top:16px;">
+          <span style="color:var(--safe);font-weight:600;">✅ You've already marked attendance for this session!</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FEATURES ========== -->
+  <section class="features-section" style="padding-top:0;">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📐</div>
+        <h3>100m Geofence</h3>
+        <p>Attendance is marked only if you are physically within 100m of your teacher's GPS location.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h3>Supabase Auth</h3>
+        <p>Secure login with role-based access. Teachers control sessions; students mark attendance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Real-time Updates</h3>
+        <p>Teacher's dashboard updates live as each student checks in.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <p>GeoAttend &copy; 2025 — Built with C++ OOP + Supabase + GPS</p>
+  </footer>
+
+  <script type="module">
+    import {
+      getSession, getProfile, signOut,
+      getActiveSession, markAttendance as sbMarkAttendance, alreadyMarked,
+      haversineDistance
+    } from './supabase-client.js';
+
+    let currentUser = null;
+    let currentProfile = null;
+    let activeSession = null;
+
+    // ─── Auth Guard ──────────────────────────────────
+    (async () => {
+      const session = await getSession();
+      if (!session) { window.location.href = 'login.html'; return; }
+      currentUser = session.user;
+
+      currentProfile = await getProfile();
+
+      // Teachers go to teacher portal
+      if (currentProfile?.role === 'teacher') {
+        window.location.href = 'teacher.html'; return;
+      }
+
+      const name = currentProfile?.full_name || currentUser.email;
+      document.getElementById('userNavName').textContent = name;
+
+      // Load active session
+      await loadSession();
+    })();
+
+    async function loadSession() {
+      try {
+        activeSession = await getActiveSession();
+        showSessionBanner(activeSession);
+
+        if (activeSession) {
+          // Check if already marked
+          const marked = await alreadyMarked(activeSession.id, currentUser.id);
+          if (marked) {
+            document.getElementById('markBtn').disabled = true;
+            document.getElementById('alreadyMarked').style.display = 'block';
+          }
+        }
+      } catch (e) {
+        showNoSession();
+      }
+    }
+
+    function showSessionBanner(session) {
+      const banner = document.getElementById('sessionBanner');
+      const noSess = document.getElementById('noSessionBanner');
+      const statusText = document.getElementById('sessionStatusText');
+      const subtext = document.getElementById('sessionSubtext');
+
+      if (session) {
+        banner.style.display = 'block';
+        noSess.style.display = 'none';
+        statusText.innerHTML = `<span style="color:var(--safe)">Session Active</span>`;
+        subtext.textContent = `Started by ${session.teacher_name || 'Teacher'} — you must be within 100m to mark attendance.`;
+      } else {
+        showNoSession();
+      }
+    }
+
+    function showNoSession() {
+      document.getElementById('sessionBanner').style.display = 'none';
+      document.getElementById('noSessionBanner').style.display = 'flex';
+    }
+
+    // ─── Mark Attendance ────────────────────────────
+    window.markAttendance = async () => {
+      // Reload session first
+      activeSession = await getActiveSession();
+      if (!activeSession) {
+        showAlert('alertBox', 'warning', '⚠️ No active session. Ask your teacher to start attendance.');
+        showNoSession();
+        return;
+      }
+
+      setLoading(true);
+      showAlert('alertBox', 'info', '📡 Fetching your GPS location...');
+
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+
+          // Update location display
+          document.getElementById('locationText').textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+
+          // Show distance from teacher
+          const dist = haversineDistance(activeSession.lat, activeSession.lng, lat, lng);
+          showDistanceBar(dist, activeSession.radius || 100);
+
+          try {
+            const name = currentProfile?.full_name || currentUser.email;
+            const result = await sbMarkAttendance(activeSession, currentUser.id, name, lat, lng);
+            showAlert('alertBox', 'success', `✅ Attendance marked! You were ${result.distance}m from the teacher.`);
+            document.getElementById('markBtn').disabled = true;
+            document.getElementById('alreadyMarked').style.display = 'block';
+          } catch (err) {
+            if (err.message.includes('already marked')) {
+              showAlert('alertBox', 'info', 'You already marked attendance for this session.');
+              document.getElementById('markBtn').disabled = true;
+              document.getElementById('alreadyMarked').style.display = 'block';
+            } else {
+              showAlert('alertBox', 'error', `❌ ${err.message}`);
+            }
+          }
+          setLoading(false);
+        },
+        (err) => {
+          showAlert('alertBox', 'error', 'GPS error: ' + err.message + '. Please allow location access.');
+          setLoading(false);
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    };
+
+    function showDistanceBar(dist, radius) {
+      const pct = Math.min((dist / radius) * 100, 100);
+      const el = document.getElementById('distanceBar');
+      const inf = document.getElementById('distanceInfo');
+      const val = document.getElementById('distanceValue');
+
+      inf.style.display = 'block';
+      el.style.width = pct + '%';
+      el.style.background = dist <= radius ? 'var(--safe)' : 'var(--danger)';
+      val.textContent = `${Math.round(dist)}m`;
+      val.style.color = dist <= radius ? 'var(--safe)' : 'var(--danger)';
+    }
+
+    function showAlert(id, type, msg) {
+      const el = document.getElementById(id);
+      const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+      el.className = `alert alert-${type} show`;
+      el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+    }
+
+    function setLoading(loading) {
+      document.getElementById('markBtnText').textContent = loading ? 'Please wait...' : '🎯 Mark Attendance';
+      document.getElementById('markSpinner').className = loading ? 'spinner active' : 'spinner';
+      document.getElementById('markBtn').disabled = loading;
+    }
+
+    window.doSignOut = async () => {
+      await signOut();
+      window.location.href = 'login.html';
+    };
+  </script>
+
+</body>
+
+</html>

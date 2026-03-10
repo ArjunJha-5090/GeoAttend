@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>GeoAttend — My Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* ======================================================
+       MOBILE-FIRST STUDENT DASHBOARD
+       ====================================================== */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-deep);
+            padding-bottom: 80px;
+            /* bottom nav space */
+            padding-top: 0;
+            min-height: 100vh;
+        }
+
+        /* ── Top Header Bar ── */
+        .top-bar {
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px 20px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .top-bar .brand {
+            font-size: 1.15rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .top-bar .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 6px 12px 6px 6px;
+        }
+
+        .top-bar .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gradient-hero);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .top-bar .user-pill span {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ── Hero Summary Card ── */
+        .hero-summary {
+            margin: 16px 16px 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(6, 182, 212, 0.15) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 20px;
+            padding: 24px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-summary::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.12);
+        }
+
+        .hero-summary .greeting {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .hero-summary h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .hero-summary .big-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0;
+        }
+
+        .big-stat {
+            text-align: center;
+            position: relative;
+        }
+
+        .big-stat+.big-stat::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10%;
+            bottom: 10%;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .big-stat .val {
+            font-size: 1.9rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .big-stat .lbl {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* ── Section labels ── */
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0 16px;
+            margin: 24px 0 10px;
+        }
+
+        /* ── Risk Badge (hero) ── */
+        .risk-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .risk-safe {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .risk-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+        }
+
+        .risk-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .risk-critical {
+            background: rgba(220, 38, 38, 0.25);
+            color: #fca5a5;
+        }
+
+        /* ── Quick Stats Row ── */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 16px;
+        }
+
+        .q-stat {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .q-stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-hero);
+        }
+
+        .q-stat .q-icon {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .q-stat .q-val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .q-stat .q-lbl {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* ── Subject Cards ── */
+        .subjects-scroll {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 4px;
+        }
+
+        .subjects-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .subject-chip {
+            flex-shrink: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            min-width: 140px;
+            transition: var(--transition);
+        }
+
+        .subject-chip .sub-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subject-chip .sub-name {
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .subject-chip .sub-teacher {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .subject-chip .sub-count {
+            font-size: 1.3rem;
+            font-weight: 900;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subject-chip .sub-count-lbl {
+            font-size: 0.7rem;
+            color: var(--text-subtle);
+        }
+
+        /* ── Progress Bar (mini) ── */
+        .mini-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 100px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .mini-progress-bar {
+            height: 100%;
+            border-radius: 100px;
+            background: var(--gradient-hero);
+        }
+
+        /* ── Attendance History List ── */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding: 0 16px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            animation: slideIn 0.2s ease;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .h-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--gradient-card);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .h-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .h-subject {
+            font-size: 0.92rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .h-teacher {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        .h-time {
+            font-size: 0.72rem;
+            color: var(--text-subtle);
+            margin-top: 3px;
+        }
+
+        .h-right {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .h-dist {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--safe);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 3px 8px;
+            border-radius: 100px;
+        }
+
+        .h-check {
+            font-size: 1.1rem;
+            margin-top: 4px;
+        }
+
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-subtle);
+        }
+
+        .empty-state .e-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state h3 {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .empty-state p {
+            font-size: 0.83rem;
+        }
+
+        /* ── Loading Skeleton ── */
+        .skeleton {
+            background: linear-gradient(90deg,
+                    rgba(255, 255, 255, 0.04) 25%,
+                    rgba(255, 255, 255, 0.08) 50%,
+                    rgba(255, 255, 255, 0.04) 75%);
+            background-size: 200% 100%;
+            animation: skeleton 1.4s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes skeleton {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* ── Bottom Navigation ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding: 8px 0 env(safe-area-inset-bottom, 8px);
+            z-index: 100;
+        }
+
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 8px 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+
+        .nav-tab .nav-icon {
+            font-size: 1.3rem;
+        }
+
+        .nav-tab .nav-lbl {
+            font-size: 0.65rem;
+            color: var(--text-subtle);
+            font-weight: 500;
+        }
+
+        .nav-tab.active .nav-lbl {
+            color: var(--accent-3);
+        }
+
+        .nav-tab.active .nav-icon {
+            filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6));
+        }
+
+        /* ── Pull to refresh hint ── */
+        .refresh-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .refresh-btn:active {
+            transform: rotate(180deg);
+        }
+
+        /* Responsive: full screen on desktop too */
+        @media (min-width: 600px) {
+            body {
+                max-width: 480px;
+                margin: 0 auto;
+            }
+
+            .bottom-nav {
+                max-width: 480px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── TOP BAR ── -->
+    <div class="top-bar">
+        <div class="brand">📍 GeoAttend</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <button class="refresh-btn" id="refreshBtn" title="Refresh" onclick="loadAll()">🔄</button>
+            <div class="user-pill">
+                <div class="avatar" id="avatarInitials">?</div>
+                <span id="navUserName">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── HERO SUMMARY ── -->
+    <div class="hero-summary" id="heroCard">
+        <div class="greeting">My Attendance</div>
+        <h1 id="heroName">Welcome back 👋</h1>
+        <div id="riskPill" class="risk-pill risk-safe">✅ Safe</div>
+
+        <div class="big-stats">
+            <div class="big-stat">
+                <div class="val" id="bigTotal">—</div>
+                <div class="lbl">Sessions</div>
+            </div>
+            <div class="big-stat">
+                <div class="val" id="bigPresent">—</div>
+                <div class="lbl">Present</div>
+            </div>
+            <div class="big-stat">
+                <div class="val" id="bigPct">—%</div>
+                <div class="lbl">Overall</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── QUICK STATS ROW ── -->
+    <div class="section-label">At a Glance</div>
+    <div class="quick-stats">
+        <div class="q-stat">
+            <div class="q-icon">📚</div>
+            <div class="q-val" id="qSubjects">0</div>
+            <div class="q-lbl">Subjects</div>
+        </div>
+        <div class="q-stat">
+            <div class="q-icon">🔥</div>
+            <div class="q-val" id="qStreak">0</div>
+            <div class="q-lbl">Day Streak</div>
+        </div>
+        <div class="q-stat">
+            <div class="q-icon">📅</div>
+            <div class="q-val" id="qThisWeek">0</div>
+            <div class="q-lbl">This Week</div>
+        </div>
+        <div class="q-stat">
+            <div class="q-icon">📍</div>
+            <div class="q-val" id="qAvgDist">—m</div>
+            <div class="q-lbl">Avg Distance</div>
+        </div>
+    </div>
+
+    <!-- ── SUBJECTS ── -->
+    <div class="section-label">Subjects</div>
+    <div class="subjects-scroll" id="subjectsScroll">
+        <!-- Skeleton placeholders -->
+        <div class="subject-chip" style="min-width:140px;">
+            <div class="skeleton" style="width:30px;height:30px;border-radius:8px;margin-bottom:8px;"></div>
+            <div class="skeleton" style="width:80%;height:12px;margin-bottom:6px;"></div>
+            <div class="skeleton" style="width:60%;height:10px;margin-bottom:10px;"></div>
+            <div class="skeleton" style="width:40%;height:18px;"></div>
+        </div>
+        <div class="subject-chip" style="min-width:140px;">
+            <div class="skeleton" style="width:30px;height:30px;border-radius:8px;margin-bottom:8px;"></div>
+            <div class="skeleton" style="width:80%;height:12px;margin-bottom:6px;"></div>
+            <div class="skeleton" style="width:60%;height:10px;margin-bottom:10px;"></div>
+            <div class="skeleton" style="width:40%;height:18px;"></div>
+        </div>
+    </div>
+
+    <!-- ── ATTENDANCE HISTORY ── -->
+    <div class="section-label"
+        style="display:flex;align-items:center;justify-content:space-between;padding-right:16px;">
+        <span>Attendance History</span>
+        <span id="historyCount" style="font-size:0.72rem;color:var(--accent-3);"></span>
+    </div>
+
+    <div class="history-list" id="historyList">
+        <!-- Skeleton -->
+        <div class="history-item" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+            <div class="skeleton" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;"></div>
+            <div style="flex:1;">
+                <div class="skeleton" style="width:60%;height:13px;margin-bottom:6px;"></div>
+                <div class="skeleton" style="width:45%;height:10px;"></div>
+            </div>
+        </div>
+        <div class="history-item" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+            <div class="skeleton" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;"></div>
+            <div style="flex:1;">
+                <div class="skeleton" style="width:70%;height:13px;margin-bottom:6px;"></div>
+                <div class="skeleton" style="width:40%;height:10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark Attendance FAB -->
+    <a href="index.html" style="
+    position: fixed;
+    bottom: 92px;
+    right: 20px;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--gradient-hero);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 8px 24px rgba(99,102,241,0.5);
+    z-index: 90;
+    text-decoration: none;
+    transition: var(--transition);
+    " title="Mark Attendance">🎯</a>
+
+    <!-- ── BOTTOM NAV ── -->
+    <nav class="bottom-nav">
+        <button class="nav-tab" onclick="window.location.href='index.html'">
+            <span class="nav-icon">🎯</span>
+            <span class="nav-lbl">Attend</span>
+        </button>
+        <button class="nav-tab active">
+            <span class="nav-icon">📊</span>
+            <span class="nav-lbl">Dashboard</span>
+        </button>
+        <button class="nav-tab" onclick="doSignOut()">
+            <span class="nav-icon">🚪</span>
+            <span class="nav-lbl">Sign Out</span>
+        </button>
+    </nav>
+
+    <script type="module">
+        import {
+            getSession, getProfile, signOut,
+            getStudentHistory, getSubjectSummary
+        } from './supabase-client.js';
+
+        const SUBJECT_ICONS = ['📐', '🔬', '📖', '💻', '🧮', '🎨', '🏛️', '⚗️', '🌍', '🎵', '📝', '🧪'];
+
+        let currentUser = null;
+        let currentProfile = null;
+        let history = [];
+        let subjects = [];
+
+        // ── Auth guard ─────────────────────────────────
+        (async () => {
+            const session = await getSession();
+            if (!session) { window.location.href = 'login.html'; return; }
+            currentUser = session.user;
+
+            currentProfile = await getProfile();
+            if (currentProfile?.role === 'teacher') {
+                window.location.href = 'teacher.html'; return;
+            }
+
+            const name = currentProfile?.full_name || currentUser.email.split('@')[0];
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            document.getElementById('navUserName').textContent = name.split(' ')[0];
+            document.getElementById('avatarInitials').textContent = initials;
+            document.getElementById('heroName').textContent = `Hey, ${name.split(' ')[0]} 👋`;
+
+            await loadAll();
+        })();
+
+        window.loadAll = async () => {
+            document.getElementById('refreshBtn').style.transform = 'rotate(360deg)';
+            setTimeout(() => document.getElementById('refreshBtn').style.transform = '', 500);
+
+            try {
+                [history, subjects] = await Promise.all([
+                    getStudentHistory(currentUser.id),
+                    getSubjectSummary(currentUser.id)
+                ]);
+
+                renderStats();
+                renderSubjects();
+                renderHistory();
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        function renderStats() {
+            const total = history.length;
+            const pct = total > 0 ? Math.round((total / Math.max(total, 1)) * 100) : 0;
+
+            document.getElementById('bigTotal').textContent = total;
+            document.getElementById('bigPresent').textContent = total;
+            document.getElementById('bigPct').textContent = total > 0 ? pct + '%' : '—%';
+            document.getElementById('qSubjects').textContent = subjects.length;
+
+            // Streak
+            const streak = calcStreak(history);
+            document.getElementById('qStreak').textContent = streak;
+
+            // This week
+            const now = new Date();
+            const week = history.filter(r => {
+                const d = new Date(r.marked_at);
+                return (now - d) < 7 * 24 * 3600 * 1000;
+            }).length;
+            document.getElementById('qThisWeek').textContent = week;
+
+            // Avg distance
+            const dists = history.filter(r => r.distance_m != null).map(r => r.distance_m);
+            const avg = dists.length > 0 ? Math.round(dists.reduce((a, b) => a + b, 0) / dists.length) : null;
+            document.getElementById('qAvgDist').textContent = avg !== null ? avg + 'm' : '—m';
+
+            // Risk pill
+            const riskEl = document.getElementById('riskPill');
+            // Simple: based on this week's activity
+            if (total === 0) {
+                riskEl.className = 'risk-pill risk-warning';
+                riskEl.textContent = '⚠️ No Data Yet';
+            } else if (pct >= 85) {
+                riskEl.className = 'risk-pill risk-safe';
+                riskEl.textContent = '✅ Safe';
+            } else if (pct >= 80) {
+                riskEl.className = 'risk-pill risk-warning';
+                riskEl.textContent = '⚠️ Warning';
+            } else {
+                riskEl.className = 'risk-pill risk-danger';
+                riskEl.textContent = '🔴 At Risk';
+            }
+        }
+
+        function renderSubjects() {
+            const container = document.getElementById('subjectsScroll');
+            if (subjects.length === 0) {
+                container.innerHTML = `
+          <div style="padding:20px;color:var(--text-subtle);font-size:0.85rem;white-space:nowrap;">
+            No subjects yet. Mark attendance to see subjects here.
+          </div>`;
+                return;
+            }
+
+            container.innerHTML = subjects.map((s, i) => {
+                const icon = SUBJECT_ICONS[i % SUBJECT_ICONS.length];
+                // Find highest attended for relative bar
+                const maxAttended = Math.max(...subjects.map(s => s.attended));
+                const barPct = Math.round((s.attended / maxAttended) * 100);
+                return `
+          <div class="subject-chip">
+            <div class="sub-icon">${icon}</div>
+            <div class="sub-name" title="${s.subject}">${s.subject}</div>
+            <div class="sub-teacher">👩‍🏫 ${s.teacher}</div>
+            <div class="sub-count">${s.attended}</div>
+            <div class="sub-count-lbl">classes attended</div>
+            <div class="mini-progress">
+              <div class="mini-progress-bar" style="width:${barPct}%"></div>
+            </div>
+          </div>`;
+            }).join('');
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            document.getElementById('historyCount').textContent = history.length + ' records';
+
+            if (history.length === 0) {
+                list.innerHTML = `
+          <div class="empty-state">
+            <div class="e-icon">📋</div>
+            <h3>No attendance yet</h3>
+            <p>Start attending classes to see your history here.</p>
+          </div>`;
+                return;
+            }
+
+            // Group by date
+            const grouped = {};
+            history.forEach(r => {
+                const date = new Date(r.marked_at);
+                const key = date.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(r);
+            });
+
+            let html = '';
+            for (const [dateLabel, records] of Object.entries(grouped)) {
+                html += `<div style="font-size:0.72rem;font-weight:700;color:var(--text-subtle);text-transform:uppercase;letter-spacing:0.08em;padding:16px 0 6px;">${dateLabel}</div>`;
+                records.forEach(r => {
+                    const time = new Date(r.marked_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                    const dist = r.distance_m != null ? `${r.distance_m}m` : '';
+                    html += `
+            <div class="history-item">
+              <div class="h-icon-wrap">📚</div>
+              <div class="h-meta">
+                <div class="h-subject">${r.subject_name}</div>
+                <div class="h-teacher">👩‍🏫 ${r.teacher_name}</div>
+                <div class="h-time">🕐 ${time}</div>
+              </div>
+              <div class="h-right">
+                ${dist ? `<div class="h-dist">📍 ${dist}</div>` : ''}
+                <div class="h-check">✅</div>
+              </div>
+            </div>`;
+                });
+            }
+            list.innerHTML = html;
+        }
+
+        function calcStreak(history) {
+            if (history.length === 0) return 0;
+            const days = [...new Set(history.map(r => new Date(r.marked_at).toDateString()))];
+            days.sort((a, b) => new Date(b) - new Date(a));
+            let streak = 0;
+            const today = new Date();
+            for (let i = 0; i < days.length; i++) {
+                const d = new Date(days[i]);
+                const diff = Math.round((today - d) / (1000 * 3600 * 24));
+                if (diff === i || diff === i + 1) streak++;
+                else break;
+            }
+            return streak;
+        }
+
+        window.doSignOut = async () => {
+            await signOut();
+            window.location.href = 'login.html';
+        };
+    </script>
+
+</body>
+
+</html>

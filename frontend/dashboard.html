@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeoAttend — Dashboard</title>
+    <meta name="description"
+        content="Real-time attendance dashboard with geofence map, Chart.js charts, and risk-level analysis." />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Google Maps (replace YOUR_API_KEY) -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvkZez3MkBuWyK36p3XeLqm8tZqJSF3kw&callback=initMap">
+        </script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-logo"><span class="icon">📍</span> GeoAttend</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <span id="dashUserName" style="color:var(--text-muted);font-size:0.85rem;"></span>
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="dashboard.html" class="nav-link active">Dashboard</a>
+            <button class="btn btn-outline" id="signOutBtn"
+                style="padding:8px 16px;font-size:0.85rem;display:none;">Sign Out</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+
+        <!-- ========== SIDEBAR ========== -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Navigation</div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-item active">📊 Overview</div>
+                <div class="sidebar-item" onclick="scrollToSection('mapSection')">🗺️ Geofence Map</div>
+                <div class="sidebar-item" onclick="scrollToSection('chartsSection')">📈 Analytics</div>
+                <div class="sidebar-item" onclick="window.location='index.html'">🎯 Mark Attendance</div>
+            </nav>
+
+            <div style="margin-top:40px;">
+                <div class="sidebar-title">Risk Levels</div>
+                <div style="display:flex;flex-direction:column;gap:10px;padding:0 12px;margin-top:10px;">
+                    <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--safe)">
+                        <span
+                            style="width:10px;height:10px;border-radius:50%;background:var(--safe);display:inline-block;"></span>
+                        Safe &gt; 85%
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--warning)">
+                        <span
+                            style="width:10px;height:10px;border-radius:50%;background:var(--warning);display:inline-block;"></span>
+                        Warning 80–85%
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--danger)">
+                        <span
+                            style="width:10px;height:10px;border-radius:50%;background:var(--danger);display:inline-block;"></span>
+                        Danger 75–80%
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--critical)">
+                        <span
+                            style="width:10px;height:10px;border-radius:50%;background:var(--critical);display:inline-block;"></span>
+                        Critical &lt; 75%
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main class="dashboard-main">
+
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div>
+                    <h1>Welcome, <span id="studentName"
+                            style="background:linear-gradient(135deg,#6366f1,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Student</span>
+                    </h1>
+                    <p style="color:var(--text-muted)">Here's your attendance overview</p>
+                </div>
+                <div id="riskBadge" class="badge badge-safe">Safe</div>
+            </div>
+
+            <!-- Student Selector -->
+            <div class="student-selector">
+                <div class="input-group" style="flex:1;">
+                    <label for="dashStudentId">Student ID</label>
+                    <input type="number" id="dashStudentId" class="form-input" placeholder="Enter Student ID"
+                        value="1" />
+                </div>
+                <button class="btn btn-primary" onclick="loadDashboard()">Load Data</button>
+            </div>
+
+            <!-- Warning Banner -->
+            <div id="dashWarning" class="alert alert-warning" style="display:none;margin-bottom:24px;">
+                <span>⚠️</span>
+                <span>Attendance below 80% — warning triggered!</span>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🎓</div>
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-label">Total Classes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="statAttended">0</div>
+                    <div class="stat-label">Classes Attended</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="statPercent">0%</div>
+                    <div class="stat-label">Attendance %</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔖</div>
+                    <div class="stat-value" id="statMargin">0</div>
+                    <div class="stat-label">Classes Margin Left</div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div id="chartsSection" class="card" style="margin-bottom:32px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                    <h3 style="font-size:0.95rem;color:var(--text-muted)">Attendance Progress</h3>
+                    <span id="progressLabel" style="font-size:0.85rem;color:var(--accent-3);font-weight:600;"></span>
+                </div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px;">
+                    <span style="font-size:0.75rem;color:var(--text-subtle)">0%</span>
+                    <span style="font-size:0.75rem;color:var(--warning)">80% (Minimum)</span>
+                    <span style="font-size:0.75rem;color:var(--text-subtle)">100%</span>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <h3>Attendance Breakdown</h3>
+                    <div class="chart-container" style="height:260px;">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Weekly Attendance</h3>
+                    <div style="height:260px;">
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geofence Map -->
+            <div id="mapSection" style="margin-bottom:40px;">
+                <div class="section-header">
+                    <h2>🗺️ Geofence Map</h2>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="card" style="padding:0;overflow:hidden;">
+                    <div id="map"></div>
+                    <div style="padding:16px 20px;display:flex;gap:20px;font-size:0.83rem;color:var(--text-muted);">
+                        <span style="display:flex;align-items:center;gap:6px;">
+                            <span
+                                style="width:12px;height:12px;border-radius:50%;background:#6366f1;display:inline-block;"></span>
+                            Campus Center
+                        </span>
+                        <span style="display:flex;align-items:center;gap:6px;">
+                            <span
+                                style="width:12px;height:12px;border-radius:50%;background:#06b6d4;display:inline-block;"></span>
+                            Your Location
+                        </span>
+                        <span style="display:flex;align-items:center;gap:6px;">
+                            <span
+                                style="width:12px;height:12px;border-radius:3px;background:rgba(99,102,241,0.2);border:2px solid #6366f1;display:inline-block;"></span>
+                            Geofence Zone
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="section-header">
+                <h2>⚡ Quick Actions</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px;">
+                <a href="index.html" class="btn btn-primary">🎯 Mark Attendance</a>
+                <button class="btn btn-outline" onclick="loadDashboard()">🔄 Refresh Data</button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+        <p>GeoAttend &copy; 2025 — Built with C++ OOP + Crow + SQLite + HTML/CSS/JS</p>
+        <p style="margin-top:8px; font-size:0.75rem;">OODP Project | Geofenced Attendance Tracker</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script type="module">
+        import { getSession, getProfile, signOut } from './supabase-client.js';
+        (async () => {
+            const session = await getSession();
+            if (!session) { window.location.href = 'login.html'; return; }
+            const profile = await getProfile();
+            const name = profile?.full_name || session.user.email;
+            const nameEl = document.getElementById('dashUserName');
+            if (nameEl) nameEl.textContent = name;
+            const soBtn = document.getElementById('signOutBtn');
+            if (soBtn) {
+                soBtn.style.display = 'flex';
+                soBtn.onclick = async () => { await signOut(); window.location.href = 'login.html'; };
+            }
+            const nameSpan = document.getElementById('studentName');
+            if (nameSpan) nameSpan.textContent = name.split(' ')[0];
+        })();
+    </script>
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+
+</html>

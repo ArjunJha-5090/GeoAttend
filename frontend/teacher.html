@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>GeoAttend — Teacher Portal</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            padding-top: 0;
+            padding-bottom: 80px;
+            background: var(--bg-deep);
+        }
+
+        /* ── Top Bar ── */
+        .top-bar {
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .top-bar .brand {
+            font-size: 1.1rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .top-bar .t-name {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* ── Main Content ── */
+        .page-wrap {
+            padding: 20px 16px;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* ── Session Card ── */
+        .session-card {
+            border-radius: 20px;
+            padding: 22px 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+
+        .session-card.active-session {
+            background: rgba(16, 185, 129, 0.06);
+            border-color: rgba(16, 185, 129, 0.35);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.08);
+        }
+
+        .session-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .session-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .session-icon.live {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .session-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .session-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--safe);
+            margin-right: 5px;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* ── Subject Input (shown when inactive) ── */
+        .subject-input-wrap {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .subject-input-wrap label {
+            display: block;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-subtle);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .subject-input-wrap input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: var(--font);
+            padding: 0;
+        }
+
+        .subject-input-wrap input::placeholder {
+            color: var(--text-subtle);
+            font-weight: 400;
+        }
+
+        /* ── Active Session Info Chips ── */
+        .info-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .info-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 5px 12px;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-chip.sub-chip {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.25);
+            color: #a5b4fc;
+        }
+
+        /* ── Buttons ── */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* ── Stats strip ── */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .stat-tile {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 12px;
+            text-align: center;
+        }
+
+        .stat-tile .t-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-tile .t-lbl {
+            font-size: 0.68rem;
+            color: var(--text-subtle);
+            margin-top: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        /* ── Student List ── */
+        .attendance-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .att-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            animation: slideIn 0.25s ease;
+        }
+
+        .att-item:last-child {
+            border-bottom: none;
+        }
+
+        .att-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-hero);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .att-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .att-name {
+            font-size: 0.92rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .att-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .att-dist {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--safe);
+            border-radius: 100px;
+            padding: 4px 10px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* ── Section heading ── */
+        .section-lbl {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 20px 0 12px;
+        }
+
+        /* ── Empty State ── */
+        .empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-subtle);
+        }
+
+        .empty .e-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .empty h3 {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        /* ── Bottom Nav ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding: 8px 0 env(safe-area-inset-bottom, 8px);
+            z-index: 100;
+        }
+
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 8px 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+
+        .nav-tab .nav-icon {
+            font-size: 1.25rem;
+        }
+
+        .nav-tab .nav-lbl {
+            font-size: 0.65rem;
+            color: var(--text-subtle);
+            font-weight: 500;
+        }
+
+        .nav-tab.active .nav-lbl {
+            color: var(--accent-3);
+        }
+
+        @media (min-width: 600px) {
+            body {
+                max-width: 680px;
+                margin: 0 auto;
+            }
+
+            .bottom-nav {
+                max-width: 680px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── TOP BAR ── -->
+    <div class="top-bar">
+        <div class="brand">📍 GeoAttend</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <span class="t-name" id="teacherNameNav"></span>
+            <button class="btn btn-outline" onclick="doSignOut()" style="padding:7px 14px;font-size:0.8rem;">Sign
+                Out</button>
+        </div>
+    </div>
+
+    <div class="page-wrap">
+
+        <!-- ── Page Title ── -->
+        <div style="margin-bottom:20px;">
+            <h1 style="font-size:1.5rem;margin-bottom:4px;">👩‍🏫 Teacher Portal</h1>
+            <p style="color:var(--text-muted);font-size:0.85rem;">Start a session with your GPS. Students within 100m
+                can check in.</p>
+        </div>
+
+        <!-- ── Alert ── -->
+        <div id="alertBox" class="alert" style="margin-bottom:16px;"></div>
+
+        <!-- ── Session Card ── -->
+        <div id="sessionCard" class="session-card">
+
+            <div class="session-top">
+                <div class="session-icon" id="sessionIcon">📡</div>
+                <div>
+                    <div class="session-title" id="sessionTitle">No Active Session</div>
+                    <div class="session-sub" id="sessionSub">Set a subject and start attendance</div>
+                </div>
+            </div>
+
+            <!-- Subject Input (shown when inactive) -->
+            <div id="subjectInputWrap" class="subject-input-wrap">
+                <label>📚 Subject Name</label>
+                <input type="text" id="subjectInput" placeholder="e.g. Data Structures, OOP, Maths..." maxlength="50" />
+            </div>
+
+            <!-- Active Session Info Chips (shown when active) -->
+            <div id="activeChips" class="info-chips" style="display:none;"></div>
+
+            <!-- Buttons -->
+            <div class="btn-row">
+                <button class="btn btn-primary" id="startBtn" onclick="startAttendance()" style="flex:1;">
+                    <span id="startBtnText">📡 Start Session</span>
+                    <div class="spinner" id="startSpinner"></div>
+                </button>
+                <button class="btn btn-outline" id="endBtn" onclick="endAttendance()"
+                    style="display:none;flex:1;border-color:var(--danger);color:var(--danger);">
+                    ⏹ End Session
+                </button>
+            </div>
+        </div>
+
+        <!-- ── Live Stats (shown when active) ── -->
+        <div id="statsStrip" class="stats-strip" style="display:none;">
+            <div class="stat-tile">
+                <div class="t-val" id="statCount">0</div>
+                <div class="t-lbl">Present</div>
+            </div>
+            <div class="stat-tile">
+                <div class="t-val">100m</div>
+                <div class="t-lbl">Radius</div>
+            </div>
+            <div class="stat-tile">
+                <div class="t-val" id="statTime">—</div>
+                <div class="t-lbl">Started</div>
+            </div>
+        </div>
+
+        <!-- ── Student Attendance List ── -->
+        <div id="listSection" style="display:none;">
+            <div class="section-lbl" style="display:flex;align-items:center;justify-content:space-between;">
+                <span>Present Students</span>
+                <span id="countBadge"
+                    style="background:var(--gradient-hero);color:#fff;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:100px;">0</span>
+            </div>
+            <div id="studentList" class="attendance-list"></div>
+        </div>
+
+    </div>
+
+    <!-- ── Bottom Nav ── -->
+    <nav class="bottom-nav">
+        <button class="nav-tab active">
+            <span class="nav-icon">👩‍🏫</span>
+            <span class="nav-lbl">Session</span>
+        </button>
+        <button class="nav-tab" onclick="doSignOut()">
+            <span class="nav-icon">🚪</span>
+            <span class="nav-lbl">Sign Out</span>
+        </button>
+    </nav>
+
+    <script type="module">
+        import {
+            getSession, getProfile, signOut,
+            startSession, endSession, getActiveSession,
+            getSessionRecords, subscribeToRecords
+        } from './supabase-client.js';
+
+        let currentSession = null;
+        let currentUser = null;
+        let currentProfile = null;
+        let recordsSub = null;
+        let records = [];
+
+        // ── Auth guard ──────────────────────────────────
+        (async () => {
+            const session = await getSession();
+            if (!session) { window.location.href = 'login.html'; return; }
+            currentUser = session.user;
+
+            currentProfile = await getProfile();
+            if (currentProfile?.role !== 'teacher') { window.location.href = 'index.html'; return; }
+
+            const name = currentProfile.full_name || currentUser.email;
+            document.getElementById('teacherNameNav').textContent = name;
+
+            // Check existing active session
+            await checkExistingSession();
+        })();
+
+        async function checkExistingSession() {
+            try {
+                const session = await getActiveSession();
+                if (session && session.teacher_id === currentUser.id) {
+                    currentSession = session;
+                    showActiveUI();
+                    await loadRecords();
+                }
+            } catch (e) { /* no session */ }
+        }
+
+        // ── Start Session ──────────────────────────────
+        window.startAttendance = () => {
+            const subject = document.getElementById('subjectInput').value.trim();
+            if (!subject) {
+                showAlert('alertBox', 'error', '❌ Please enter a subject name first.');
+                document.getElementById('subjectInput').focus();
+                return;
+            }
+
+            setBtnLoading(true);
+            showAlert('alertBox', 'info', '📡 Fetching your GPS location...');
+
+            if (!navigator.geolocation) {
+                showAlert('alertBox', 'error', 'Geolocation not supported.');
+                setBtnLoading(false);
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    const { latitude: lat, longitude: lng } = pos.coords;
+                    try {
+                        const name = currentProfile.full_name || currentUser.email;
+                        currentSession = await startSession(currentUser.id, name, subject, lat, lng, 100);
+                        showAlert('alertBox', 'success', `✅ "${subject}" session started! Students within 100m can now check in.`);
+                        showActiveUI();
+                        await loadRecords();
+                    } catch (err) {
+                        showAlert('alertBox', 'error', err.message);
+                        setBtnLoading(false);
+                    }
+                },
+                (err) => {
+                    showAlert('alertBox', 'error', '❌ GPS error: ' + err.message);
+                    setBtnLoading(false);
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        };
+
+        // ── End Session ────────────────────────────────
+        window.endAttendance = async () => {
+            if (!currentSession) return;
+            try {
+                await endSession(currentUser.id);
+                showAlert('alertBox', 'info', `⏹ Session ended. ${records.length} student(s) were present.`);
+                currentSession = null;
+                records = [];
+                if (recordsSub) recordsSub.unsubscribe();
+                showInactiveUI();
+            } catch (err) {
+                showAlert('alertBox', 'error', err.message);
+            }
+        };
+
+        // ── Load & Subscribe ────────────────────────────
+        async function loadRecords() {
+            if (!currentSession) return;
+            records = await getSessionRecords(currentSession.id);
+            renderRecords();
+            subscribeRealtime();
+        }
+
+        function subscribeRealtime() {
+            if (!currentSession) return;
+            if (recordsSub) recordsSub.unsubscribe();
+            import('./supabase-client.js').then(({ subscribeToRecords }) => {
+                recordsSub = subscribeToRecords(currentSession.id, (payload) => {
+                    if (payload.new) {
+                        records.unshift(payload.new);
+                        renderRecords();
+                    }
+                });
+            });
+        }
+
+        // ── Render ─────────────────────────────────────
+        function renderRecords() {
+            const list = document.getElementById('studentList');
+            const n = records.length;
+            document.getElementById('statCount').textContent = n;
+            document.getElementById('countBadge').textContent = n;
+
+            if (n === 0) {
+                list.innerHTML = `
+          <div class="empty">
+            <div class="e-icon">⏳</div>
+            <h3>Waiting for students...</h3>
+            <p>Students within 100m can mark attendance now.</p>
+          </div>`;
+                return;
+            }
+
+            list.innerHTML = records.map(r => {
+                const initials = (r.student_name || 'S').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                const time = new Date(r.marked_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                return `
+          <div class="att-item">
+            <div class="att-avatar">${initials}</div>
+            <div class="att-meta">
+              <div class="att-name">${r.student_name || 'Unknown'}</div>
+              <div class="att-time">🕐 ${time}</div>
+            </div>
+            <div class="att-dist">📍 ${r.distance_m ?? '—'}m</div>
+          </div>`;
+            }).join('');
+        }
+
+        // ── UI State ───────────────────────────────────
+        function showActiveUI() {
+            document.getElementById('sessionCard').className = 'session-card active-session';
+            document.getElementById('sessionIcon').className = 'session-icon live';
+            document.getElementById('sessionIcon').textContent = '🟢';
+            document.getElementById('sessionTitle').innerHTML = `<span class="pulse-dot"></span> Session Live`;
+            document.getElementById('sessionSub').textContent = `Subject: ${currentSession.subject_name}`;
+
+            document.getElementById('subjectInputWrap').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('endBtn').style.display = 'flex';
+            document.getElementById('statsStrip').style.display = 'grid';
+            document.getElementById('listSection').style.display = 'block';
+
+            // Active chips
+            const t = new Date(currentSession.started_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('statTime').textContent = t;
+            document.getElementById('activeChips').style.display = 'flex';
+            document.getElementById('activeChips').innerHTML = `
+        <div class="info-chip sub-chip">📚 ${currentSession.subject_name}</div>
+        <div class="info-chip">📍 ${parseFloat(currentSession.lat).toFixed(4)}, ${parseFloat(currentSession.lng).toFixed(4)}</div>
+        <div class="info-chip">📏 100m radius</div>`;
+
+            setBtnLoading(false);
+            renderRecords();
+        }
+
+        function showInactiveUI() {
+            document.getElementById('sessionCard').className = 'session-card';
+            document.getElementById('sessionIcon').className = 'session-icon';
+            document.getElementById('sessionIcon').textContent = '📡';
+            document.getElementById('sessionTitle').textContent = 'No Active Session';
+            document.getElementById('sessionSub').textContent = 'Set a subject and start attendance';
+
+            document.getElementById('subjectInputWrap').style.display = 'block';
+            document.getElementById('activeChips').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'flex';
+            document.getElementById('endBtn').style.display = 'none';
+            document.getElementById('statsStrip').style.display = 'none';
+            document.getElementById('listSection').style.display = 'none';
+        }
+
+        function setBtnLoading(loading) {
+            document.getElementById('startBtnText').textContent = loading ? 'Getting GPS...' : '📡 Start Session';
+            document.getElementById('startSpinner').className = loading ? 'spinner active' : 'spinner';
+            document.getElementById('startBtn').disabled = loading;
+        }
+
+        function showAlert(id, type, msg) {
+            const el = document.getElementById(id);
+            el.className = `alert alert-${type} show`;
+            el.innerHTML = `<span></span><span>${msg}</span>`;
+        }
+
+        window.doSignOut = async () => {
+            if (currentSession) await endSession(currentUser.id).catch(() => { });
+            await signOut();
+            window.location.href = 'login.html';
+        };
+    </script>
+
+</body>
+
+</html>

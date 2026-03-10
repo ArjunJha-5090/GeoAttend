@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeoAttend — Login</title>
+    <meta name="description" content="Sign in to GeoAttend — Geofenced attendance tracking." />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 440px;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .login-logo .brand {
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+        }
+
+        .login-logo p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Tab switcher */
+        .tab-row {
+            display: flex;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: var(--font);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            background: var(--gradient-hero);
+            color: white;
+        }
+
+        /* Role selector */
+        .role-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .role-card {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .role-card .role-icon {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+
+        .role-card .role-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .role-card.selected {
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--accent-3);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+            color: var(--text-subtle);
+            font-size: 0.8rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .form-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.82rem;
+            color: var(--text-subtle);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+
+        <!-- Logo -->
+        <div class="login-logo">
+            <div class="brand">📍 GeoAttend</div>
+            <p>GPS-powered geofenced attendance system</p>
+        </div>
+
+        <!-- Card -->
+        <div class="login-card">
+
+            <!-- Tab: Sign In / Sign Up -->
+            <div class="tab-row">
+                <button class="tab-btn active" id="tabSignIn" onclick="switchTab('signin')">Sign In</button>
+                <button class="tab-btn" id="tabSignUp" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- SIGN IN FORM -->
+            <div id="signinForm">
+                <div class="form-fields">
+                    <div class="input-group">
+                        <label for="siEmail">Email</label>
+                        <input type="email" id="siEmail" class="form-input" placeholder="your@email.com" />
+                    </div>
+                    <div class="input-group">
+                        <label for="siPassword">Password</label>
+                        <input type="password" id="siPassword" class="form-input" placeholder="••••••••" />
+                    </div>
+                </div>
+
+                <div id="siAlert" class="alert" style="margin-top:16px;"></div>
+
+                <button class="btn btn-primary" id="siBtn" onclick="doSignIn()"
+                    style="width:100%;margin-top:20px;font-size:1rem;padding:15px;">
+                    <span id="siBtnText">Sign In</span>
+                    <div class="spinner" id="siSpinner"></div>
+                </button>
+            </div>
+
+            <!-- SIGN UP FORM -->
+            <div id="signupForm" style="display:none;">
+
+                <!-- Role Selector -->
+                <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px;font-weight:500;">I am a...</p>
+                <div class="role-row">
+                    <div class="role-card selected" id="roleStudent" onclick="selectRole('student')">
+                        <div class="role-icon">🎓</div>
+                        <div class="role-name">Student</div>
+                    </div>
+                    <div class="role-card" id="roleTeacher" onclick="selectRole('teacher')">
+                        <div class="role-icon">👩‍🏫</div>
+                        <div class="role-name">Teacher</div>
+                    </div>
+                </div>
+
+                <div class="form-fields">
+                    <div class="input-group">
+                        <label for="suName">Full Name</label>
+                        <input type="text" id="suName" class="form-input" placeholder="Arjun Jha" />
+                    </div>
+                    <div class="input-group">
+                        <label for="suEmail">Email</label>
+                        <input type="email" id="suEmail" class="form-input" placeholder="your@email.com" />
+                    </div>
+                    <div class="input-group">
+                        <label for="suPassword">Password</label>
+                        <input type="password" id="suPassword" class="form-input" placeholder="Min 6 characters" />
+                    </div>
+                </div>
+
+                <div id="suAlert" class="alert" style="margin-top:16px;"></div>
+
+                <button class="btn btn-primary" id="suBtn" onclick="doSignUp()"
+                    style="width:100%;margin-top:20px;font-size:1rem;padding:15px;">
+                    <span id="suBtnText">Create Account</span>
+                    <div class="spinner" id="suSpinner"></div>
+                </button>
+            </div>
+
+        </div>
+
+        <div class="login-footer">
+            GeoAttend &copy; 2025 — OODP Project
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { signIn, signUp, getSession, getProfile } from './supabase-client.js';
+
+        // Redirect if already logged in
+        (async () => {
+            const session = await getSession();
+            if (session) redirectByRole();
+        })();
+
+        async function redirectByRole() {
+            try {
+                const profile = await getProfile();
+                window.location.href = profile?.role === 'teacher' ? 'teacher.html' : 'index.html';
+            } catch {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Tab switching
+        window.switchTab = (tab) => {
+            const isSignIn = tab === 'signin';
+            document.getElementById('signinForm').style.display = isSignIn ? 'block' : 'none';
+            document.getElementById('signupForm').style.display = isSignIn ? 'none' : 'block';
+            document.getElementById('tabSignIn').className = 'tab-btn' + (isSignIn ? ' active' : '');
+            document.getElementById('tabSignUp').className = 'tab-btn' + (!isSignIn ? ' active' : '');
+        };
+
+        // Role selector
+        let selectedRole = 'student';
+        window.selectRole = (role) => {
+            selectedRole = role;
+            document.getElementById('roleStudent').className = 'role-card' + (role === 'student' ? ' selected' : '');
+            document.getElementById('roleTeacher').className = 'role-card' + (role === 'teacher' ? ' selected' : '');
+        };
+
+        // Alert utility
+        function showAlert(id, type, msg) {
+            const el = document.getElementById(id);
+            const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+            el.className = `alert alert-${type} show`;
+            el.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${msg}</span>`;
+        }
+
+        function setLoading(textId, spinnerId, loading, text) {
+            document.getElementById(textId).textContent = loading ? 'Please wait...' : text;
+            document.getElementById(spinnerId).className = loading ? 'spinner active' : 'spinner';
+            document.getElementById(spinnerId).closest('button').disabled = loading;
+        }
+
+        // SIGN IN
+        window.doSignIn = async () => {
+            const email = document.getElementById('siEmail').value.trim();
+            const password = document.getElementById('siPassword').value;
+            if (!email || !password) { showAlert('siAlert', 'error', 'Please fill in all fields.'); return; }
+
+            setLoading('siBtnText', 'siSpinner', true);
+            try {
+                await signIn(email, password);
+                showAlert('siAlert', 'success', 'Signed in! Redirecting...');
+                setTimeout(() => redirectByRole(), 800);
+            } catch (err) {
+                showAlert('siAlert', 'error', err.message || 'Sign in failed.');
+                setLoading('siBtnText', 'siSpinner', false, 'Sign In');
+            }
+        };
+
+        // Enter key on password
+        document.getElementById('siPassword').addEventListener('keydown', e => {
+            if (e.key === 'Enter') window.doSignIn();
+        });
+
+        // SIGN UP
+        window.doSignUp = async () => {
+            const name = document.getElementById('suName').value.trim();
+            const email = document.getElementById('suEmail').value.trim();
+            const password = document.getElementById('suPassword').value;
+            if (!name || !email || !password) { showAlert('suAlert', 'error', 'Please fill in all fields.'); return; }
+            if (password.length < 6) { showAlert('suAlert', 'error', 'Password must be at least 6 characters.'); return; }
+
+            setLoading('suBtnText', 'suSpinner', true);
+            try {
+                await signUp(email, password, name, selectedRole);
+                showAlert('suAlert', 'success', 'Account created! Please check your email to confirm, then sign in.');
+                setLoading('suBtnText', 'suSpinner', false, 'Create Account');
+            } catch (err) {
+                showAlert('suAlert', 'error', err.message || 'Sign up failed.');
+                setLoading('suBtnText', 'suSpinner', false, 'Create Account');
+            }
+        };
+    </script>
+
+</body>
+
+</html>
