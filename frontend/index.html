@@ -25,15 +25,13 @@
   </nav>
 
   <!-- ========== HERO ========== -->
-  <section class="hero" style="min-height:55vh;">
-    <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
+  <section class="hero">
     <div class="hero-content">
       <div class="hero-badge">📡 GPS-Powered Geofenced Attendance</div>
-      <h1 class="hero-title" style="font-size: clamp(2.2rem, 5vw, 4rem);">
+      <h1 class="hero-title">
         Mark Your<br /><span class="gradient-text">Attendance</span>
       </h1>
-      <p class="hero-subtitle" style="font-size:1rem;">
+      <p class="hero-subtitle">
         A teacher must start a session first. You must be within <strong>100 metres</strong> to check in.
       </p>
     </div>
@@ -55,7 +53,7 @@
 
       <!-- No Session Warning -->
       <div id="noSessionBanner" class="alert alert-warning show" style="margin-bottom:20px;display:none;">
-        <span>⚠️</span>
+        <span style="font-size:1.1rem">⚠️</span>
         <span>No active session. Ask your teacher to start attendance first.</span>
       </div>
 
@@ -68,22 +66,23 @@
         <div class="form-row" style="margin-bottom:20px;">
           <div class="location-info" id="locationInfo">
             <span class="dot"></span>
-            <span id="locationText">GPS location will be fetched when you mark attendance</span>
+            <span id="locationText" style="font-family: monospace;">GPS location will be fetched when you mark
+              attendance</span>
           </div>
         </div>
 
         <!-- Distance from teacher (shown after GPS) -->
         <div id="distanceInfo" style="display:none; margin-bottom:16px;">
           <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-            <span style="font-size:0.85rem;color:var(--text-muted);">Distance from teacher</span>
-            <span id="distanceValue" style="font-size:0.85rem;font-weight:600;"></span>
+            <span style="font-size:0.85rem;color:var(--text-muted);font-weight:500;">Distance from teacher</span>
+            <span id="distanceValue" style="font-size:0.85rem;font-weight:600;color:var(--text);"></span>
           </div>
           <div class="progress-bar-wrap">
-            <div class="progress-bar" id="distanceBar" style="width:0%;background:var(--gradient-hero);"></div>
+            <div class="progress-bar" id="distanceBar" style="width:0%;"></div>
           </div>
-          <div style="display:flex;justify-content:space-between;margin-top:4px;">
-            <span style="font-size:0.72rem;color:var(--text-subtle)">0m (Here)</span>
-            <span style="font-size:0.72rem;color:var(--safe)">100m (Limit)</span>
+          <div style="display:flex;justify-content:space-between;margin-top:6px;">
+            <span style="font-size:0.75rem;color:var(--text-subtle)">0m (Here)</span>
+            <span style="font-size:0.75rem;color:var(--text-subtle)">100m (Limit)</span>
           </div>
         </div>
 

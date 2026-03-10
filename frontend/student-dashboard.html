@@ -83,31 +83,32 @@
         /* ── Hero Summary Card ── */
         .hero-summary {
             margin: 16px 16px 0;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(6, 182, 212, 0.15) 100%);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             padding: 24px 20px;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
         }
 
         .hero-summary::before {
             content: '';
             position: absolute;
-            top: -40px;
-            right: -40px;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: rgba(99, 102, 241, 0.12);
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
         }
 
         .hero-summary .greeting {
             font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--text-subtle);
             text-transform: uppercase;
             letter-spacing: 0.08em;
             margin-bottom: 4px;
+            font-weight: 600;
         }
 
         .hero-summary h1 {
@@ -138,9 +139,9 @@
         }
 
         .big-stat .val {
-            font-size: 1.9rem;
-            font-weight: 900;
-            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text);
             line-height: 1;
             margin-bottom: 4px;
         }
@@ -219,7 +220,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: var(--gradient-hero);
+            background: var(--accent);
         }
 
         .q-stat .q-icon {
@@ -228,12 +229,9 @@
         }
 
         .q-stat .q-val {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: var(--gradient-hero);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
             line-height: 1;
         }
 
@@ -290,22 +288,19 @@
 
         .subject-chip .sub-count {
             font-size: 1.3rem;
-            font-weight: 900;
-            background: var(--gradient-hero);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            color: var(--text);
         }
 
         .subject-chip .sub-count-lbl {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--text-subtle);
         }
 
         /* ── Progress Bar (mini) ── */
         .mini-progress {
             height: 4px;
-            background: rgba(255, 255, 255, 0.06);
+            background: var(--bg-deep);
             border-radius: 100px;
             margin-top: 10px;
             overflow: hidden;
@@ -314,7 +309,7 @@
         .mini-progress-bar {
             height: 100%;
             border-radius: 100px;
-            background: var(--gradient-hero);
+            background: var(--accent);
         }
 
         /* ── Attendance History List ── */
@@ -339,16 +334,17 @@
         }
 
         .h-icon-wrap {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--gradient-card);
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         .h-meta {
