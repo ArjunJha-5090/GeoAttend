@@ -180,11 +180,14 @@
             padding: 14px;
         }
     </style>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
     <div class="auth-card">
-        <div class="auth-logo">📍 GeoAttend</div>
+        <div class="auth-logo"><i data-lucide="map-pin" style="margin-right:8px; color:var(--accent);"></i> GeoAttend
+        </div>
 
         <!-- Tabs -->
         <div class="tabs">
@@ -201,11 +204,11 @@
                 <label>I am a...</label>
                 <div class="role-row">
                     <div class="role-card selected" id="siRoleStudent" onclick="selectSignInRole('student')">
-                        <div class="r-icon">🎓</div>
+                        <div class="r-icon"><i data-lucide="graduation-cap"></i></div>
                         <div class="r-name">Student</div>
                     </div>
                     <div class="role-card" id="siRoleTeacher" onclick="selectSignInRole('teacher')">
-                        <div class="r-icon">👩‍🏫</div>
+                        <div class="r-icon"><i data-lucide="book-open"></i></div>
                         <div class="r-name">Teacher</div>
                     </div>
                 </div>
@@ -235,11 +238,11 @@
                 <label>I am a...</label>
                 <div class="role-row">
                     <div class="role-card selected" id="roleStudent" onclick="selectRole('student')">
-                        <div class="r-icon">🎓</div>
+                        <div class="r-icon"><i data-lucide="graduation-cap"></i></div>
                         <div class="r-name">Student</div>
                     </div>
                     <div class="role-card" id="roleTeacher" onclick="selectRole('teacher')">
-                        <div class="r-icon">👩‍🏫</div>
+                        <div class="r-icon"><i data-lucide="book-open"></i></div>
                         <div class="r-name">Teacher</div>
                     </div>
                 </div>
@@ -338,7 +341,7 @@
         window.doSignIn = async () => {
             const email = document.getElementById('siEmail').value.trim();
             const password = document.getElementById('siPassword').value;
-            if (!email || !password) { showAlert('signinAlert', 'error', '❌ Enter email and password.'); return; }
+            if (!email || !password) { showAlert('signinAlert', 'error', 'Enter email and password.'); return; }
 
             setBtnLoading('signinBtnText', 'signinSpinner', true, 'Signing in...');
             try {
@@ -346,7 +349,7 @@
                 const profile = await getProfile();
 
                 if (profile?.role && profile.role !== signinSelectedRole) {
-                    showAlert('signinAlert', 'error', `❌ Account is registered as a ${profile.role}. Redirecting...`);
+                    showAlert('signinAlert', 'error', `Account is registered as a ${profile.role}. Redirecting...`);
                     setTimeout(() => {
                         window.location.href = profile.role === 'teacher' ? 'teacher.html' : 'student-dashboard.html';
                     }, 1500);
@@ -355,7 +358,7 @@
 
                 window.location.href = profile?.role === 'teacher' ? 'teacher.html' : 'student-dashboard.html';
             } catch (err) {
-                showAlert('signinAlert', 'error', '❌ ' + err.message);
+                showAlert('signinAlert', 'error', err.message);
                 setBtnLoading('signinBtnText', 'signinSpinner', false, 'Sign In');
             }
         };
@@ -364,8 +367,8 @@
             const name = document.getElementById('suName').value.trim();
             const email = document.getElementById('suEmail').value.trim();
             const password = document.getElementById('suPassword').value;
-            if (!name || !email || !password) { showAlert('signupAlert', 'error', '❌ Fill in all required fields.'); return; }
-            if (password.length < 6) { showAlert('signupAlert', 'error', '❌ Password must be at least 6 characters.'); return; }
+            if (!name || !email || !password) { showAlert('signupAlert', 'error', 'Fill in all required fields.'); return; }
+            if (password.length < 6) { showAlert('signupAlert', 'error', 'Password must be at least 6 characters.'); return; }
 
             const extraInfo = selectedRole === 'student' ? {
                 rollNumber: document.getElementById('suRoll').value.trim(),
@@ -377,10 +380,10 @@
             setBtnLoading('signupBtnText', 'signupSpinner', true, 'Creating account...');
             try {
                 await signUp(email, password, name, selectedRole, extraInfo);
-                showAlert('signupAlert', 'success', '✅ Account created! Check your email or sign in directly if email confirmation is disabled.');
+                showAlert('signupAlert', 'success', 'Account created! Check your email or sign in directly if email confirmation is disabled.');
                 setBtnLoading('signupBtnText', 'signupSpinner', false, 'Create Account');
             } catch (err) {
-                showAlert('signupAlert', 'error', '❌ ' + err.message);
+                showAlert('signupAlert', 'error', err.message);
                 setBtnLoading('signupBtnText', 'signupSpinner', false, 'Create Account');
             }
         };
@@ -395,6 +398,9 @@
             document.getElementById(textId).textContent = text;
             document.getElementById(spinnerId).className = loading ? 'spinner active' : 'spinner';
         }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
     </script>
 </body>
 

@@ -338,144 +338,183 @@
         .nav-tab.active .nl {
             color: var(--accent-3);
         }
-
-        @media (min-width:600px) {
-            body {
-                max-width: 700px;
-                margin: 0 auto;
-            }
-
-            .bottom-nav {
-                max-width: 700px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
     </style>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
 
-    <div class="top-bar">
-        <div class="brand">📍 GeoAttend</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-            <span id="teacherNameNav" style="font-size:0.78rem;color:var(--text-muted);"></span>
-            <button class="btn btn-outline" onclick="doSignOut()" style="padding:6px 12px;font-size:0.78rem;">Sign
-                Out</button>
+    <div class="app-layout">
+        <!-- ========== MOBILE TOPBAR ========== -->
+        <div class="mobile-topbar">
+            <div class="brand">📍 GeoAttend</div>
+            <div class="user-profile-mini" style="border:none; background:transparent; padding:0;">
+                <div class="avatar" id="mobAvatar">T</div>
+            </div>
         </div>
-    </div>
 
-    <div class="page-wrap">
-        <h1 style="font-size:1.35rem;margin-bottom:4px;">👩‍🏫 Teacher Portal</h1>
-        <p style="color:var(--text-muted);font-size:0.82rem;margin-bottom:18px;">Start a class-targeted session. Only
-            students from that class can mark attendance.</p>
-
-        <div id="alertBox" class="alert" style="margin-bottom:14px;"></div>
-
-        <!-- ── Session Card ── -->
-        <div id="sessionCard" class="session-card">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-                <div id="sessionIcon" style="font-size:1.4rem;">📡</div>
-                <div>
-                    <div style="font-weight:700;font-size:0.95rem;" id="sessionTitle">Start a New Session</div>
-                    <div style="font-size:0.78rem;color:var(--text-muted);" id="sessionSub">Fill in the details below
+        <!-- ========== SIDEBAR ========== -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand"><i data-lucide="map-pin" style="color:var(--accent);"></i> GeoAttend</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="teacher.html" class="nav-item active"><i data-lucide="radio"
+                        style="width:18px;height:18px;"></i> Active Session</a>
+                <a href="teacher-dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"
+                        style="width:18px;height:18px;"></i> My Dashboard</a>
+                <a href="profile.html" class="nav-item"><i data-lucide="user" style="width:18px;height:18px;"></i>
+                    Profile</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile-mini">
+                    <div class="avatar" id="sideAvatar">T</div>
+                    <div class="info">
+                        <span class="name" id="sideName">Teacher</span>
+                        <span class="role">Teacher</span>
                     </div>
+                    <button class="sign-out-icon-btn" onclick="doSignOut()" title="Sign Out">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main class="main-content">
+
+            <div class="page-wrap">
+                <h1 style="font-size:1.35rem;margin-bottom:4px;display:flex;align-items:center;gap:8px;"><i
+                        data-lucide="book-open"></i> Teacher Portal</h1>
+                <p style="color:var(--text-muted);font-size:0.82rem;margin-bottom:18px;">Start a class-targeted session.
+                    Only
+                    students from that class can mark attendance.</p>
+
+                <div id="alertBox" class="alert" style="margin-bottom:14px;"></div>
+
+                <!-- ── Session Card ── -->
+                <div id="sessionCard" class="session-card">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+                        <div id="sessionIcon"
+                            style="font-size:1.4rem;display:flex;align-items:center;justify-content:center;"><i
+                                data-lucide="radio"></i></div>
+                        <div>
+                            <div style="font-weight:700;font-size:0.95rem;" id="sessionTitle">Start a New Session</div>
+                            <div style="font-size:0.78rem;color:var(--text-muted);" id="sessionSub">Fill in the details
+                                below
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inactive: form fields -->
+                    <div id="startForm">
+                        <div class="field-wrap">
+                            <div class="field-label" style="display:flex;align-items:center;gap:4px;"><i
+                                    data-lucide="book" style="width:14px;height:14px;"></i> Subject Name</div>
+                            <input class="field-input" type="text" id="subjectInput" placeholder="e.g. Data Structures"
+                                maxlength="60" />
+                        </div>
+
+                        <div class="grid-3" style="margin-bottom:10px;">
+                            <div>
+                                <div class="field-label">Year / Class</div>
+                                <select class="field-input" id="targetClass">
+                                    <option value="">All Classes</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="field-label">Section</div>
+                                <input class="field-input" type="text" id="targetSection"
+                                    placeholder="e.g. E1, CS-2A..." maxlength="20" />
+                            </div>
+                            <div>
+                                <div class="field-label">Branch</div>
+                                <select class="field-input" id="targetBranch">
+                                    <option value="">All Branches</option>
+                                    <option value="CSE">CSE</option>
+                                    <option value="IT">IT</option>
+                                    <option value="ECE">ECE</option>
+                                    <option value="EEE">EEE</option>
+                                    <option value="ME">ME</option>
+                                    <option value="CE">CE</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="startAttendance()" style="width:100%;">
+                            <span id="startBtnText"
+                                style="display:flex;align-items:center;justify-content:center;gap:8px;"><i
+                                    data-lucide="radio" style="width:18px;height:18px;"></i> Start Session</span>
+                            <div class="spinner" id="startSpinner"></div>
+                        </button>
+                    </div>
+
+                    <!-- Active: info chips -->
+                    <div id="activeChips" class="info-chips" style="display:none;"></div>
+                    <div class="btn-row" id="endBtnRow" style="display:none;">
+                        <button class="btn btn-outline" onclick="endAttendance()"
+                            style="flex:1;border-color:var(--danger);color:var(--danger);display:flex;align-items:center;justify-content:center;gap:6px;"><i
+                                data-lucide="power" style="width:18px;height:18px;"></i> End Session</button>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div id="statsStrip" class="stats-strip" style="display:none;">
+                    <div class="stat-tile">
+                        <div class="tv" id="statPresent">0</div>
+                        <div class="tl">Present</div>
+                    </div>
+                    <div class="stat-tile">
+                        <div class="tv" id="statAbsent">—</div>
+                        <div class="tl">Absent</div>
+                    </div>
+                    <div class="stat-tile">
+                        <div class="tv">100m</div>
+                        <div class="tl">Radius</div>
+                    </div>
+                </div>
+
+                <!-- Present / Absent list -->
+                <div id="listSection" style="display:none;">
+                    <div class="list-tabs">
+                        <button class="list-tab active" id="tabPresent" onclick="showTab('present')"
+                            style="display:flex;align-items:center;justify-content:center;gap:6px;"><i
+                                data-lucide="check-circle-2" style="width:16px;height:16px;"></i> Present (<span
+                                id="presentCount">0</span>)</button>
+                        <button class="list-tab" id="tabAbsent" onclick="showTab('absent')"
+                            style="display:flex;align-items:center;justify-content:center;gap:6px;"><i
+                                data-lucide="x-circle" style="width:16px;height:16px;"></i> Absent (<span
+                                id="absentCount">—</span>)</button>
+                    </div>
+                    <div id="presentList" class="s-list"></div>
+                    <div id="absentList" class="s-list" style="display:none;"></div>
                 </div>
             </div>
 
-            <!-- Inactive: form fields -->
-            <div id="startForm">
-                <div class="field-wrap">
-                    <div class="field-label">📚 Subject Name</div>
-                    <input class="field-input" type="text" id="subjectInput" placeholder="e.g. Data Structures"
-                        maxlength="60" />
-                </div>
-
-                <div class="grid-3" style="margin-bottom:10px;">
-                    <div>
-                        <div class="field-label">Year / Class</div>
-                        <select class="field-input" id="targetClass">
-                            <option value="">All Classes</option>
-                            <option value="1st Year">1st Year</option>
-                            <option value="2nd Year">2nd Year</option>
-                            <option value="3rd Year">3rd Year</option>
-                            <option value="4th Year">4th Year</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div class="field-label">Section</div>
-                        <input class="field-input" type="text" id="targetSection" placeholder="e.g. E1, CS-2A..."
-                            maxlength="20" />
-                    </div>
-                    <div>
-                        <div class="field-label">Branch</div>
-                        <select class="field-input" id="targetBranch">
-                            <option value="">All Branches</option>
-                            <option value="CSE">CSE</option>
-                            <option value="IT">IT</option>
-                            <option value="ECE">ECE</option>
-                            <option value="EEE">EEE</option>
-                            <option value="ME">ME</option>
-                            <option value="CE">CE</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary" onclick="startAttendance()" style="width:100%;">
-                    <span id="startBtnText">📡 Start Session</span>
-                    <div class="spinner" id="startSpinner"></div>
+            <!-- Bottom Nav -->
+            <nav class="bottom-nav">
+                <button class="nav-tab active" onclick="">
+                    <i data-lucide="radio" class="ni"></i><span class="nl">Session</span>
                 </button>
-            </div>
-
-            <!-- Active: info chips -->
-            <div id="activeChips" class="info-chips" style="display:none;"></div>
-            <div class="btn-row" id="endBtnRow" style="display:none;">
-                <button class="btn btn-outline" onclick="endAttendance()"
-                    style="flex:1;border-color:var(--danger);color:var(--danger);">⏹ End Session</button>
-            </div>
-        </div>
-
-        <!-- Stats -->
-        <div id="statsStrip" class="stats-strip" style="display:none;">
-            <div class="stat-tile">
-                <div class="tv" id="statPresent">0</div>
-                <div class="tl">Present</div>
-            </div>
-            <div class="stat-tile">
-                <div class="tv" id="statAbsent">—</div>
-                <div class="tl">Absent</div>
-            </div>
-            <div class="stat-tile">
-                <div class="tv">100m</div>
-                <div class="tl">Radius</div>
-            </div>
-        </div>
-
-        <!-- Present / Absent list -->
-        <div id="listSection" style="display:none;">
-            <div class="list-tabs">
-                <button class="list-tab active" id="tabPresent" onclick="showTab('present')">✅ Present (<span
-                        id="presentCount">0</span>)</button>
-                <button class="list-tab" id="tabAbsent" onclick="showTab('absent')">🔴 Absent (<span
-                        id="absentCount">—</span>)</button>
-            </div>
-            <div id="presentList" class="s-list"></div>
-            <div id="absentList" class="s-list" style="display:none;"></div>
-        </div>
-    </div>
-
-    <!-- Bottom Nav -->
-    <nav class="bottom-nav">
-        <button class="nav-tab active" onclick="">
-            <span class="ni">📡</span><span class="nl">Session</span>
-        </button>
-        <button class="nav-tab" onclick="window.location.href='teacher-dashboard.html'">
-            <span class="ni">📊</span><span class="nl">My Dashboard</span>
-        </button>
-        <button class="nav-tab" onclick="window.location.href='profile.html'">
-            <span class="ni">👤</span><span class="nl">Profile</span>
-        </button>
-    </nav>
+                <button class="nav-tab" onclick="window.location.href='teacher-dashboard.html'">
+                    <i data-lucide="layout-dashboard" class="ni"></i><span class="nl">My Dashboard</span>
+                </button>
+                <button class="nav-tab" onclick="window.location.href='profile.html'">
+                    <i data-lucide="user" class="ni"></i><span class="nl">Profile</span>
+                </button>
+            </nav>
+        </main> <!-- /main-content -->
+    </div> <!-- /app-layout -->
 
     <script type="module">
         import {
@@ -495,7 +534,18 @@
             currentUser = session.user;
             currentProfile = await getProfile();
             if (currentProfile?.role !== 'teacher') { window.location.href = 'index.html'; return; }
-            document.getElementById('teacherNameNav').textContent = currentProfile.full_name || currentUser.email;
+
+            const name = currentProfile.full_name || currentUser.email;
+            const initial = name.charAt(0).toUpperCase();
+
+            const sideNameEl = document.getElementById('sideName');
+            if (sideNameEl) sideNameEl.textContent = name;
+
+            const sideAvatarEl = document.getElementById('sideAvatar');
+            if (sideAvatarEl) sideAvatarEl.textContent = initial;
+
+            const mobAvatarEl = document.getElementById('mobAvatar');
+            if (mobAvatarEl) mobAvatarEl.textContent = initial;
             await checkExistingSession();
         })();
 
@@ -513,32 +563,31 @@
         // ── Start ────────────────────────────────────
         window.startAttendance = () => {
             const subject = document.getElementById('subjectInput').value.trim();
-            if (!subject) { showAlert('error', '❌ Enter a subject name first.'); document.getElementById('subjectInput').focus(); return; }
+            if (!subject) { showAlert('error', 'Enter a subject name first.'); document.getElementById('subjectInput').focus(); return; }
 
             const tClass = document.getElementById('targetClass').value;
             const tSection = document.getElementById('targetSection').value;
             const tBranch = document.getElementById('targetBranch').value;
 
             setBtnLoading(true);
-            showAlert('info', '📡 Fetching GPS location...');
+            showAlert('info', 'Fetching GPS location...');
 
             navigator.geolocation.getCurrentPosition(async (pos) => {
                 const { latitude: lat, longitude: lng } = pos.coords;
                 try {
                     const name = currentProfile.full_name || currentUser.email;
                     currentSession = await startSession(currentUser.id, name, subject, tClass, tSection, tBranch, lat, lng, 100);
-                    showAlert('success', `✅ "${subject}" session live! ${buildTargetLabel()} within 100m can check in.`);
+                    showAlert('success', `"${subject}" session live! ${buildTargetLabel()} within 100m can check in.`);
                     showActiveUI();
                     await loadEverything();
                 } catch (err) { showAlert('error', err.message); setBtnLoading(false); }
-            }, (err) => { showAlert('error', '❌ GPS: ' + err.message); setBtnLoading(false); }, { enableHighAccuracy: true, timeout: 10000 });
+            }, (err) => { showAlert('error', 'GPS: ' + err.message); setBtnLoading(false); }, { enableHighAccuracy: true, timeout: 10000 });
         };
 
-        // ── End ──────────────────────────────────────
         window.endAttendance = async () => {
             if (!currentSession) return;
             await endSession(currentUser.id);
-            showAlert('info', `⏹ Session ended. ${records.length} present.`);
+            showAlert('info', `Session ended. ${records.length} present.`);
             currentSession = null; records = []; absentees = [];
             if (recordsSub) recordsSub.unsubscribe();
             showInactiveUI();
@@ -576,21 +625,21 @@
 
             // Present
             document.getElementById('presentList').innerHTML = pCount === 0 ?
-                `<div class="empty"><div class="ei">⏳</div><p>Waiting for students to check in...</p></div>` :
+                `<div class="empty"><div class="ei"><i data-lucide="clock" style="width:32px;height:32px;"></i></div><p>Waiting for students to check in...</p></div>` :
                 records.map(r => {
                     const init = (r.student_name || 'S').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
                     const time = new Date(r.marked_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
                     const detail = [r.roll_number, r.class_name, r.section && `Sec ${r.section}`, r.branch].filter(Boolean).join(' • ');
                     return `<div class="s-row">
             <div class="s-avatar">${init}</div>
-            <div class="s-meta"><div class="s-name">${r.student_name || 'Unknown'}</div><div class="s-detail">${detail}</div><div class="s-detail">🕐 ${time}</div></div>
-            <div class="s-right"><div class="dist-badge">📍 ${r.distance_m ?? '—'}m</div></div>
+            <div class="s-meta"><div class="s-name">${r.student_name || 'Unknown'}</div><div class="s-detail">${detail}</div><div class="s-detail" style="display:flex;align-items:center;gap:4px;"><i data-lucide="clock" style="width:12px;height:12px;"></i> ${time}</div></div>
+            <div class="s-right"><div class="dist-badge" style="display:flex;align-items:center;gap:4px;"><i data-lucide="map-pin" style="width:12px;height:12px;"></i> ${r.distance_m ?? '—'}m</div></div>
           </div>`;
                 }).join('');
 
             // Absent
             document.getElementById('absentList').innerHTML = aCount === 0 ?
-                `<div class="empty"><div class="ei">🎉</div><p>Everyone is present!</p></div>` :
+                `<div class="empty"><div class="ei"><i data-lucide="party-popper" style="width:32px;height:32px;"></i></div><p>Everyone is present!</p></div>` :
                 absentees.map(s => {
                     const init = (s.full_name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
                     const detail = [s.roll_number, s.class_name, s.section && `Sec ${s.section}`, s.branch].filter(Boolean).join(' • ');
@@ -615,7 +664,7 @@
         // ── UI helpers ────────────────────────────────
         function showActiveUI() {
             document.getElementById('sessionCard').className = 'session-card live';
-            document.getElementById('sessionIcon').textContent = '🟢';
+            document.getElementById('sessionIcon').innerHTML = '<i data-lucide="radio" style="color:var(--safe);"></i>';
             document.getElementById('sessionTitle').innerHTML = `<span class="pulse-dot"></span> Session Live`;
             document.getElementById('sessionSub').textContent = `${currentSession.subject_name} · ${buildTargetLabel()}`;
             document.getElementById('startForm').style.display = 'none';
@@ -624,22 +673,23 @@
             document.getElementById('listSection').style.display = 'block';
 
             const chips = [
-                `📚 ${currentSession.subject_name}`,
-                currentSession.target_class && `🎓 ${currentSession.target_class}`,
+                `<span style="display:flex;align-items:center;gap:4px;"><i data-lucide="book" style="width:14px;height:14px;"></i> ${currentSession.subject_name}</span>`,
+                currentSession.target_class && `<span style="display:flex;align-items:center;gap:4px;"><i data-lucide="graduation-cap" style="width:14px;height:14px;"></i> ${currentSession.target_class}</span>`,
                 currentSession.target_section && `Section ${currentSession.target_section}`,
-                currentSession.target_branch && `🔬 ${currentSession.target_branch}`,
-                `📍 ${parseFloat(currentSession.lat).toFixed(4)}, ${parseFloat(currentSession.lng).toFixed(4)}`,
-                '📏 100m radius'
+                currentSession.target_branch && `<span style="display:flex;align-items:center;gap:4px;"><i data-lucide="microscope" style="width:14px;height:14px;"></i> ${currentSession.target_branch}</span>`,
+                `<span style="display:flex;align-items:center;gap:4px;"><i data-lucide="map-pin" style="width:14px;height:14px;"></i> ${parseFloat(currentSession.lat).toFixed(4)}, ${parseFloat(currentSession.lng).toFixed(4)}</span>`,
+                '<span style="display:flex;align-items:center;gap:4px;"><i data-lucide="ruler" style="width:14px;height:14px;"></i> 100m radius</span>'
             ].filter(Boolean);
 
             document.getElementById('activeChips').style.display = 'flex';
             document.getElementById('activeChips').innerHTML = chips.map(c => `<div class="chip">${c}</div>`).join('');
             setBtnLoading(false);
+            lucide.createIcons();
         }
 
         function showInactiveUI() {
             document.getElementById('sessionCard').className = 'session-card';
-            document.getElementById('sessionIcon').textContent = '📡';
+            document.getElementById('sessionIcon').innerHTML = '<i data-lucide="radio"></i>';
             document.getElementById('sessionTitle').textContent = 'Start a New Session';
             document.getElementById('sessionSub').textContent = 'Fill in the details below';
             document.getElementById('startForm').style.display = 'block';
@@ -647,6 +697,7 @@
             document.getElementById('activeChips').style.display = 'none';
             document.getElementById('statsStrip').style.display = 'none';
             document.getElementById('listSection').style.display = 'none';
+            lucide.createIcons();
         }
 
         function buildTargetLabel() {
@@ -657,12 +708,15 @@
 
         function showAlert(type, msg) {
             const el = document.getElementById('alertBox');
+            const icons = { success: '<i data-lucide="check-circle-2" style="width:18px;height:18px;"></i>', error: '<i data-lucide="x-circle" style="width:18px;height:18px;"></i>', info: '<i data-lucide="info" style="width:18px;height:18px;"></i>' };
             el.className = `alert alert-${type} show`;
-            el.innerHTML = `<span></span><span>${msg}</span>`;
+            el.innerHTML = `<span style="display:flex;align-items:center;">${icons[type] || ''}</span><span>${msg}</span>`;
+            lucide.createIcons({ root: el });
         }
 
         function setBtnLoading(loading) {
-            document.getElementById('startBtnText').textContent = loading ? 'Getting GPS...' : '📡 Start Session';
+            document.getElementById('startBtnText').innerHTML = loading ? 'Getting GPS...' : '<span style="display:flex;align-items:center;gap:8px;"><i data-lucide="radio" style="width:18px;height:18px;"></i> Start Session</span>';
+            lucide.createIcons();
             document.getElementById('startSpinner').className = loading ? 'spinner active' : 'spinner';
             document.getElementById('startBtn') && (document.getElementById('startBtn').disabled = loading);
         }

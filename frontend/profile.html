@@ -186,111 +186,140 @@
         .nav-tab.active .nl {
             color: var(--accent-3);
         }
-
-        @media (min-width: 600px) {
-            body {
-                max-width: 700px;
-                margin: 0 auto;
-            }
-
-            .bottom-nav {
-                max-width: 700px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
     </style>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
 
-    <div class="top-bar">
-        <div class="brand">📍 GeoAttend</div>
-    </div>
-
-    <div class="page-wrap">
-        <div style="margin-bottom:16px;">
-            <h1 style="font-size:1.35rem;margin-bottom:3px;">👤 My Profile</h1>
-            <p style="color:var(--text-muted);font-size:0.82rem;">View and update your personal details.</p>
-        </div>
-
-        <div class="profile-card">
-            <div id="alertBox" class="alert"></div>
-
-            <div class="avatar-sec">
-                <div class="avatar-circle" id="userInitials">?</div>
-                <div>
-                    <span class="role-badge" id="userRoleBadge">Loading...</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="pName" placeholder="Your Name" />
-            </div>
-
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="pEmail" disabled title="Email cannot be changed here" />
-            </div>
-
-            <!-- Student specific fields -->
-            <div id="studentFields" style="display:none; animation: slideIn 0.25s ease;">
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Roll Number</label>
-                        <input type="text" id="pRoll" placeholder="e.g. 2201234" />
-                    </div>
-                    <div class="form-group">
-                        <label>Branch</label>
-                        <select id="pBranch">
-                            <option value="">Select Branch</option>
-                            <option value="CSE">CSE</option>
-                            <option value="IT">IT</option>
-                            <option value="ECE">ECE</option>
-                            <option value="EEE">EEE</option>
-                            <option value="ME">ME</option>
-                            <option value="CE">CE</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Year / Class</label>
-                        <select id="pClass">
-                            <option value="">Select Year</option>
-                            <option value="1st Year">1st Year</option>
-                            <option value="2nd Year">2nd Year</option>
-                            <option value="3rd Year">3rd Year</option>
-                            <option value="4th Year">4th Year</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Section</label>
-                        <input type="text" id="pSection" placeholder="e.g. E1, CS-2A..." maxlength="20" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="action-btns">
-                <button class="btn btn-primary" onclick="saveProfile()" style="padding:12px;">
-                    <span id="saveBtnText">💾 Save Changes</span>
-                    <div class="spinner" id="saveSpinner"></div>
-                </button>
-                <button class="btn btn-outline" onclick="doSignOut()"
-                    style="padding:12px; border-color:var(--danger); color:var(--danger);">
-                    🚪 Sign Out
-                </button>
+    <div class="app-layout">
+        <!-- ========== MOBILE TOPBAR ========== -->
+        <div class="mobile-topbar">
+            <div class="brand"><i data-lucide="map-pin" style="color:var(--accent);"></i> GeoAttend</div>
+            <div class="user-profile-mini" style="border:none; background:transparent; padding:0;">
+                <div class="avatar" id="mobAvatar">?</div>
             </div>
         </div>
-    </div>
 
-    <!-- Dynamic Bottom Nav based on role -->
-    <nav class="bottom-nav" id="botNav">
-        <!-- Populated in JS -->
-    </nav>
+        <!-- ========== SIDEBAR ========== -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand"><i data-lucide="map-pin" style="color:var(--accent);"></i> GeoAttend</div>
+            </div>
+            <nav class="nav-menu" id="sideNav">
+                <!-- Populated in JS -->
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile-mini">
+                    <div class="avatar" id="sideAvatar">?</div>
+                    <div class="info">
+                        <span class="name" id="sideName">Loading...</span>
+                        <span class="role" id="sideRole">User</span>
+                    </div>
+                    <button class="sign-out-icon-btn" onclick="doSignOut()" title="Sign Out">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main class="main-content">
+
+            <div class="page-wrap">
+                <div style="margin-bottom:16px;">
+                    <h1 style="font-size:1.35rem;margin-bottom:3px; display:flex; align-items:center; gap:8px;"><i
+                            data-lucide="user"></i> My Profile</h1>
+                    <p style="color:var(--text-muted);font-size:0.82rem;">View and update your personal details.</p>
+                </div>
+
+                <div class="profile-card">
+                    <div id="alertBox" class="alert"></div>
+
+                    <div class="avatar-sec">
+                        <div class="avatar-circle" id="userInitials">?</div>
+                        <div>
+                            <span class="role-badge" id="userRoleBadge">Loading...</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="pName" placeholder="Your Name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="pEmail" disabled title="Email cannot be changed here" />
+                    </div>
+
+                    <!-- Student specific fields -->
+                    <div id="studentFields" style="display:none; animation: slideIn 0.25s ease;">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Roll Number</label>
+                                <input type="text" id="pRoll" placeholder="e.g. 2201234" />
+                            </div>
+                            <div class="form-group">
+                                <label>Branch</label>
+                                <select id="pBranch">
+                                    <option value="">Select Branch</option>
+                                    <option value="CSE">CSE</option>
+                                    <option value="IT">IT</option>
+                                    <option value="ECE">ECE</option>
+                                    <option value="EEE">EEE</option>
+                                    <option value="ME">ME</option>
+                                    <option value="CE">CE</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Year / Class</label>
+                                <select id="pClass">
+                                    <option value="">Select Year</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Section</label>
+                                <input type="text" id="pSection" placeholder="e.g. E1, CS-2A..." maxlength="20" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-btns">
+                        <button class="btn btn-primary" onclick="saveProfile()" style="padding:12px;">
+                            <span id="saveBtnText"
+                                style="display:flex;align-items:center;justify-content:center;gap:6px;"><i
+                                    data-lucide="save" style="width:18px;height:18px;"></i> Save Changes</span>
+                            <div class="spinner" id="saveSpinner"></div>
+                        </button>
+                        <button class="btn btn-outline" onclick="doSignOut()"
+                            style="padding:12px; border-color:var(--danger); color:var(--danger); display:flex;align-items:center;justify-content:center;gap:6px;">
+                            <i data-lucide="log-out" style="width:18px;height:18px;"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Bottom Nav based on role -->
+            <nav class="bottom-nav" id="botNav">
+                <!-- Populated in JS -->
+            </nav>
+        </main> <!-- /main-content -->
+    </div> <!-- /app-layout -->
 
     <script type="module">
         import { getSession, getProfile, updateProfile, signOut } from './supabase-client.js';
@@ -307,16 +336,26 @@
                 currentProfile = await getProfile();
                 populateData();
                 renderNav();
+                lucide.createIcons();
             } catch (e) {
-                showAlert('error', '❌ Could not load profile: ' + e.message);
+                showAlert('error', 'Could not load profile: ' + e.message);
             }
         })();
 
         function populateData() {
             // Initials and Role
             const name = currentProfile.full_name || currentUser.email || '?';
-            document.getElementById('userInitials').textContent = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-            document.getElementById('userRoleBadge').textContent = currentProfile.role === 'teacher' ? '👩‍🏫 Teacher' : '🎓 Student';
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            document.getElementById('userInitials').textContent = initials;
+            document.getElementById('userRoleBadge').innerHTML = currentProfile.role === 'teacher' ? '<i data-lucide="book-open" style="width:14px;height:14px;"></i> Teacher' : '<i data-lucide="graduation-cap" style="width:14px;height:14px;"></i> Student';
+            lucide.createIcons({ root: document.getElementById('userRoleBadge') });
+
+            const sideNameEl = document.getElementById('sideName');
+            if (sideNameEl) sideNameEl.textContent = name.split(' ')[0];
+            const sideAvatarEl = document.getElementById('sideAvatar');
+            if (sideAvatarEl) sideAvatarEl.textContent = initials;
+            const mobAvatarEl = document.getElementById('mobAvatar');
+            if (mobAvatarEl) mobAvatarEl.textContent = initials;
 
             // Basic fields
             document.getElementById('pName').value = currentProfile.full_name || '';
@@ -335,29 +374,44 @@
         function renderNav() {
             const isTeacher = currentProfile.role === 'teacher';
             const nav = document.getElementById('botNav');
+            const sideNav = document.getElementById('sideNav');
+            const sideRoleEl = document.getElementById('sideRole');
+
+            if (sideRoleEl) sideRoleEl.textContent = isTeacher ? 'Teacher' : 'Student';
+
             if (isTeacher) {
                 nav.innerHTML = `
           <button class="nav-tab" onclick="window.location.href='teacher.html'">
-            <span class="ni">📡</span><span class="nl">Session</span>
+            <i data-lucide="radio" class="ni"></i><span class="nl">Session</span>
           </button>
           <button class="nav-tab" onclick="window.location.href='teacher-dashboard.html'">
-            <span class="ni">📊</span><span class="nl">Dashboard</span>
+            <i data-lucide="layout-dashboard" class="ni"></i><span class="nl">Dashboard</span>
           </button>
           <button class="nav-tab active">
-            <span class="ni">👤</span><span class="nl">Profile</span>
+            <i data-lucide="user" class="ni"></i><span class="nl">Profile</span>
           </button>
+        `;
+                if (sideNav) sideNav.innerHTML = `
+          <a href="teacher.html" class="nav-item"><i data-lucide="radio" style="width:18px;height:18px;"></i> Active Session</a>
+          <a href="teacher-dashboard.html" class="nav-item"><i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i> My Dashboard</a>
+          <a href="profile.html" class="nav-item active"><i data-lucide="user" style="width:18px;height:18px;"></i> Profile</a>
         `;
             } else {
                 nav.innerHTML = `
           <button class="nav-tab" onclick="window.location.href='index.html'">
-            <span class="ni">📍</span><span class="nl">Mark</span>
+            <i data-lucide="target" class="ni"></i><span class="nl">Attend</span>
           </button>
           <button class="nav-tab" onclick="window.location.href='student-dashboard.html'">
-            <span class="ni">📊</span><span class="nl">History</span>
+            <i data-lucide="layout-dashboard" class="ni"></i><span class="nl">History</span>
           </button>
           <button class="nav-tab active">
-            <span class="ni">👤</span><span class="nl">Profile</span>
+            <i data-lucide="user" class="ni"></i><span class="nl">Profile</span>
           </button>
+        `;
+                if (sideNav) sideNav.innerHTML = `
+          <a href="index.html" class="nav-item"><i data-lucide="target" style="width:18px;height:18px;"></i> Mark Attendance</a>
+          <a href="student-dashboard.html" class="nav-item"><i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i> Dashboard</a>
+          <a href="profile.html" class="nav-item active"><i data-lucide="user" style="width:18px;height:18px;"></i> Profile</a>
         `;
             }
         }
@@ -372,15 +426,15 @@
                 updates.section = document.getElementById('pSection').value.trim();
             }
 
-            if (!updates.full_name) { showAlert('error', '❌ Name cannot be empty.'); return; }
+            if (!updates.full_name) { showAlert('error', 'Name cannot be empty.'); return; }
 
             setBtnLoading(true);
             try {
                 currentProfile = await updateProfile(updates);
                 populateData(); // refresh initials
-                showAlert('success', '✅ Profile updated successfully!');
+                showAlert('success', 'Profile updated successfully!');
             } catch (err) {
-                showAlert('error', '❌ ' + err.message);
+                showAlert('error', err.message);
             } finally {
                 setBtnLoading(false);
             }
@@ -393,13 +447,16 @@
 
         function showAlert(type, msg) {
             const el = document.getElementById('alertBox');
+            const icons = { success: '<i data-lucide="check-circle-2" style="width:18px;height:18px;"></i>', error: '<i data-lucide="x-circle" style="width:18px;height:18px;"></i>' };
             el.className = `alert alert-${type} show`;
-            el.innerHTML = `<span></span><span>${msg}</span>`;
+            el.innerHTML = `<span style="display:flex;align-items:center;">${icons[type] || ''}</span><span>${msg}</span>`;
+            lucide.createIcons();
             setTimeout(() => { el.classList.remove('show'); }, 4000);
         }
 
         function setBtnLoading(loading) {
-            document.getElementById('saveBtnText').textContent = loading ? 'Saving...' : '💾 Save Changes';
+            document.getElementById('saveBtnText').innerHTML = loading ? 'Saving...' : '<i data-lucide="save" style="width:18px;height:18px;"></i> Save Changes';
+            lucide.createIcons();
             document.getElementById('saveSpinner').className = loading ? 'spinner active' : 'spinner';
         }
     </script>
