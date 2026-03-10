@@ -3,331 +3,374 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>GeoAttend — Login</title>
-    <meta name="description" content="Sign in to GeoAttend — Geofenced attendance tracking." />
     <link rel="stylesheet" href="style.css" />
     <style>
         body {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
             padding: 20px;
+            background: var(--bg-deep);
         }
 
-        .login-wrapper {
+        .auth-card {
             width: 100%;
             max-width: 440px;
-            animation: fadeUp 0.5s ease both;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px 28px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
         }
 
-        .login-logo {
+        .auth-logo {
             text-align: center;
-            margin-bottom: 36px;
-        }
-
-        .login-logo .brand {
-            font-size: 2rem;
+            margin-bottom: 24px;
+            font-size: 1.6rem;
             font-weight: 900;
             background: var(--gradient-hero);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: -0.03em;
+            -webkit-text-fill-color: transparent;
         }
 
-        .login-logo p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 6px;
-        }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 40px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
-        }
-
-        /* Tab switcher */
-        .tab-row {
+        .tabs {
             display: flex;
             background: rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius-sm);
+            border-radius: 12px;
             padding: 4px;
-            margin-bottom: 32px;
-            border: 1px solid var(--border);
+            margin-bottom: 24px;
         }
 
         .tab-btn {
             flex: 1;
             padding: 10px;
             border: none;
-            border-radius: 6px;
             background: transparent;
             color: var(--text-muted);
-            font-family: var(--font);
             font-size: 0.9rem;
             font-weight: 600;
+            border-radius: 9px;
             cursor: pointer;
             transition: var(--transition);
+            font-family: var(--font);
         }
 
         .tab-btn.active {
             background: var(--gradient-hero);
             color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
         }
 
-        /* Role selector */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--text);
+            font-size: 0.92rem;
+            font-family: var(--font);
+            outline: none;
+            transition: var(--transition);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent-3);
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .form-group select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Role Cards */
         .role-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 14px;
         }
 
         .role-card {
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 16px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 12px;
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
             background: transparent;
-            color: var(--text-muted);
-        }
-
-        .role-card .role-icon {
-            font-size: 1.8rem;
-            margin-bottom: 6px;
-        }
-
-        .role-card .role-name {
-            font-size: 0.85rem;
-            font-weight: 600;
         }
 
         .role-card.selected {
-            border-color: var(--accent);
-            background: rgba(99, 102, 241, 0.08);
-            color: var(--accent-3);
+            border-color: var(--accent-3);
+            background: rgba(99, 102, 241, 0.1);
         }
 
-        .divider {
+        .role-card .r-icon {
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+        }
+
+        .role-card .r-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* Student fields section */
+        .student-only {
+            animation: slideIn 0.25s ease;
+        }
+
+        .section-divider {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 16px 0 10px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin: 24px 0;
-            color: var(--text-subtle);
-            font-size: 0.8rem;
+            gap: 10px;
         }
 
-        .divider::before,
-        .divider::after {
+        .section-divider::after {
             content: '';
             flex: 1;
             height: 1px;
             background: var(--border);
         }
 
-        .form-fields {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .alert {
+            margin-bottom: 14px;
         }
 
-        .login-footer {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 0.82rem;
-            color: var(--text-subtle);
+        .submit-btn {
+            width: 100%;
+            margin-top: 4px;
+            font-size: 1rem;
+            padding: 14px;
         }
     </style>
 </head>
 
 <body>
+    <div class="auth-card">
+        <div class="auth-logo">📍 GeoAttend</div>
 
-    <div class="login-wrapper">
-
-        <!-- Logo -->
-        <div class="login-logo">
-            <div class="brand">📍 GeoAttend</div>
-            <p>GPS-powered geofenced attendance system</p>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" id="tabSignIn" onclick="switchTab('signin')">Sign In</button>
+            <button class="tab-btn" id="tabSignUp" onclick="switchTab('signup')">Sign Up</button>
         </div>
 
-        <!-- Card -->
-        <div class="login-card">
+        <!-- SIGN IN FORM -->
+        <div id="signinForm">
+            <div id="signinAlert" class="alert"></div>
 
-            <!-- Tab: Sign In / Sign Up -->
-            <div class="tab-row">
-                <button class="tab-btn active" id="tabSignIn" onclick="switchTab('signin')">Sign In</button>
-                <button class="tab-btn" id="tabSignUp" onclick="switchTab('signup')">Sign Up</button>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="siEmail" placeholder="your@email.com" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="siPassword" placeholder="••••••••" />
             </div>
 
-            <!-- SIGN IN FORM -->
-            <div id="signinForm">
-                <div class="form-fields">
-                    <div class="input-group">
-                        <label for="siEmail">Email</label>
-                        <input type="email" id="siEmail" class="form-input" placeholder="your@email.com" />
-                    </div>
-                    <div class="input-group">
-                        <label for="siPassword">Password</label>
-                        <input type="password" id="siPassword" class="form-input" placeholder="••••••••" />
-                    </div>
-                </div>
+            <button class="btn btn-primary submit-btn" onclick="doSignIn()">
+                <span id="signinBtnText">Sign In</span>
+                <div class="spinner" id="signinSpinner"></div>
+            </button>
+        </div>
 
-                <div id="siAlert" class="alert" style="margin-top:16px;"></div>
+        <!-- SIGN UP FORM -->
+        <div id="signupForm" style="display:none;">
+            <div id="signupAlert" class="alert"></div>
 
-                <button class="btn btn-primary" id="siBtn" onclick="doSignIn()"
-                    style="width:100%;margin-top:20px;font-size:1rem;padding:15px;">
-                    <span id="siBtnText">Sign In</span>
-                    <div class="spinner" id="siSpinner"></div>
-                </button>
-            </div>
-
-            <!-- SIGN UP FORM -->
-            <div id="signupForm" style="display:none;">
-
-                <!-- Role Selector -->
-                <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px;font-weight:500;">I am a...</p>
+            <!-- Role -->
+            <div class="form-group">
+                <label>I am a...</label>
                 <div class="role-row">
                     <div class="role-card selected" id="roleStudent" onclick="selectRole('student')">
-                        <div class="role-icon">🎓</div>
-                        <div class="role-name">Student</div>
+                        <div class="r-icon">🎓</div>
+                        <div class="r-name">Student</div>
                     </div>
                     <div class="role-card" id="roleTeacher" onclick="selectRole('teacher')">
-                        <div class="role-icon">👩‍🏫</div>
-                        <div class="role-name">Teacher</div>
+                        <div class="r-icon">👩‍🏫</div>
+                        <div class="r-name">Teacher</div>
                     </div>
                 </div>
-
-                <div class="form-fields">
-                    <div class="input-group">
-                        <label for="suName">Full Name</label>
-                        <input type="text" id="suName" class="form-input" placeholder="Arjun Jha" />
-                    </div>
-                    <div class="input-group">
-                        <label for="suEmail">Email</label>
-                        <input type="email" id="suEmail" class="form-input" placeholder="your@email.com" />
-                    </div>
-                    <div class="input-group">
-                        <label for="suPassword">Password</label>
-                        <input type="password" id="suPassword" class="form-input" placeholder="Min 6 characters" />
-                    </div>
-                </div>
-
-                <div id="suAlert" class="alert" style="margin-top:16px;"></div>
-
-                <button class="btn btn-primary" id="suBtn" onclick="doSignUp()"
-                    style="width:100%;margin-top:20px;font-size:1rem;padding:15px;">
-                    <span id="suBtnText">Create Account</span>
-                    <div class="spinner" id="suSpinner"></div>
-                </button>
             </div>
 
-        </div>
+            <!-- Common fields -->
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="suName" placeholder="Arjun Jha" />
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="suEmail" placeholder="your@email.com" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="suPassword" placeholder="Min 6 characters" />
+            </div>
 
-        <div class="login-footer">
-            GeoAttend &copy; 2025 — OODP Project
-        </div>
+            <!-- Student-only fields -->
+            <div id="studentFields" class="student-only">
+                <div class="section-divider">Student Details</div>
 
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Roll Number</label>
+                        <input type="text" id="suRoll" placeholder="e.g. 2201234" />
+                    </div>
+                    <div class="form-group">
+                        <label>Branch</label>
+                        <select id="suBranch">
+                            <option value="">Select Branch</option>
+                            <option value="CSE">CSE</option>
+                            <option value="IT">IT</option>
+                            <option value="ECE">ECE</option>
+                            <option value="EEE">EEE</option>
+                            <option value="ME">ME</option>
+                            <option value="CE">CE</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Class / Year</label>
+                        <select id="suClass">
+                            <option value="">Select Year</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Section</label>
+                        <select id="suSection">
+                            <option value="">Select Section</option>
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary submit-btn" onclick="doSignUp()">
+                <span id="signupBtnText">Create Account</span>
+                <div class="spinner" id="signupSpinner"></div>
+            </button>
+        </div>
     </div>
 
     <script type="module">
-        import { signIn, signUp, getSession, getProfile } from './supabase-client.js';
+        import { signIn, signUp, getProfile } from './supabase-client.js';
 
-        // Redirect if already logged in
-        (async () => {
-            const session = await getSession();
-            if (session) redirectByRole();
-        })();
+        let selectedRole = 'student';
 
-        async function redirectByRole() {
-            try {
-                const profile = await getProfile();
-                window.location.href = profile?.role === 'teacher' ? 'teacher.html' : 'index.html';
-            } catch {
-                window.location.href = 'index.html';
-            }
-        }
-
-        // Tab switching
         window.switchTab = (tab) => {
-            const isSignIn = tab === 'signin';
-            document.getElementById('signinForm').style.display = isSignIn ? 'block' : 'none';
-            document.getElementById('signupForm').style.display = isSignIn ? 'none' : 'block';
-            document.getElementById('tabSignIn').className = 'tab-btn' + (isSignIn ? ' active' : '');
-            document.getElementById('tabSignUp').className = 'tab-btn' + (!isSignIn ? ' active' : '');
+            const isSignin = tab === 'signin';
+            document.getElementById('tabSignIn').className = 'tab-btn' + (isSignin ? ' active' : '');
+            document.getElementById('tabSignUp').className = 'tab-btn' + (!isSignin ? ' active' : '');
+            document.getElementById('signinForm').style.display = isSignin ? 'block' : 'none';
+            document.getElementById('signupForm').style.display = !isSignin ? 'block' : 'none';
         };
 
-        // Role selector
-        let selectedRole = 'student';
         window.selectRole = (role) => {
             selectedRole = role;
             document.getElementById('roleStudent').className = 'role-card' + (role === 'student' ? ' selected' : '');
             document.getElementById('roleTeacher').className = 'role-card' + (role === 'teacher' ? ' selected' : '');
+            document.getElementById('studentFields').style.display = role === 'student' ? 'block' : 'none';
         };
 
-        // Alert utility
-        function showAlert(id, type, msg) {
-            const el = document.getElementById(id);
-            const icons = { success: '✅', error: '❌', info: 'ℹ️' };
-            el.className = `alert alert-${type} show`;
-            el.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${msg}</span>`;
-        }
-
-        function setLoading(textId, spinnerId, loading, text) {
-            document.getElementById(textId).textContent = loading ? 'Please wait...' : text;
-            document.getElementById(spinnerId).className = loading ? 'spinner active' : 'spinner';
-            document.getElementById(spinnerId).closest('button').disabled = loading;
-        }
-
-        // SIGN IN
         window.doSignIn = async () => {
             const email = document.getElementById('siEmail').value.trim();
             const password = document.getElementById('siPassword').value;
-            if (!email || !password) { showAlert('siAlert', 'error', 'Please fill in all fields.'); return; }
+            if (!email || !password) { showAlert('signinAlert', 'error', '❌ Enter email and password.'); return; }
 
-            setLoading('siBtnText', 'siSpinner', true);
+            setBtnLoading('signinBtnText', 'signinSpinner', true, 'Signing in...');
             try {
                 await signIn(email, password);
-                showAlert('siAlert', 'success', 'Signed in! Redirecting...');
-                setTimeout(() => redirectByRole(), 800);
+                const profile = await getProfile();
+                window.location.href = profile?.role === 'teacher' ? 'teacher.html' : 'student-dashboard.html';
             } catch (err) {
-                showAlert('siAlert', 'error', err.message || 'Sign in failed.');
-                setLoading('siBtnText', 'siSpinner', false, 'Sign In');
+                showAlert('signinAlert', 'error', '❌ ' + err.message);
+                setBtnLoading('signinBtnText', 'signinSpinner', false, 'Sign In');
             }
         };
 
-        // Enter key on password
-        document.getElementById('siPassword').addEventListener('keydown', e => {
-            if (e.key === 'Enter') window.doSignIn();
-        });
-
-        // SIGN UP
         window.doSignUp = async () => {
             const name = document.getElementById('suName').value.trim();
             const email = document.getElementById('suEmail').value.trim();
             const password = document.getElementById('suPassword').value;
-            if (!name || !email || !password) { showAlert('suAlert', 'error', 'Please fill in all fields.'); return; }
-            if (password.length < 6) { showAlert('suAlert', 'error', 'Password must be at least 6 characters.'); return; }
+            if (!name || !email || !password) { showAlert('signupAlert', 'error', '❌ Fill in all required fields.'); return; }
+            if (password.length < 6) { showAlert('signupAlert', 'error', '❌ Password must be at least 6 characters.'); return; }
 
-            setLoading('suBtnText', 'suSpinner', true);
+            const extraInfo = selectedRole === 'student' ? {
+                rollNumber: document.getElementById('suRoll').value.trim(),
+                className: document.getElementById('suClass').value,
+                section: document.getElementById('suSection').value,
+                branch: document.getElementById('suBranch').value,
+            } : {};
+
+            setBtnLoading('signupBtnText', 'signupSpinner', true, 'Creating account...');
             try {
-                await signUp(email, password, name, selectedRole);
-                showAlert('suAlert', 'success', 'Account created! Please check your email to confirm, then sign in.');
-                setLoading('suBtnText', 'suSpinner', false, 'Create Account');
+                await signUp(email, password, name, selectedRole, extraInfo);
+                showAlert('signupAlert', 'success', '✅ Account created! Check your email or sign in directly if email confirmation is disabled.');
+                setBtnLoading('signupBtnText', 'signupSpinner', false, 'Create Account');
             } catch (err) {
-                showAlert('suAlert', 'error', err.message || 'Sign up failed.');
-                setLoading('suBtnText', 'suSpinner', false, 'Create Account');
+                showAlert('signupAlert', 'error', '❌ ' + err.message);
+                setBtnLoading('signupBtnText', 'signupSpinner', false, 'Create Account');
             }
         };
-    </script>
 
+        function showAlert(id, type, msg) {
+            const el = document.getElementById(id);
+            el.className = `alert alert-${type} show`;
+            el.innerHTML = `<span></span><span>${msg}</span>`;
+        }
+
+        function setBtnLoading(textId, spinnerId, loading, text) {
+            document.getElementById(textId).textContent = text;
+            document.getElementById(spinnerId).className = loading ? 'spinner active' : 'spinner';
+        }
+    </script>
 </body>
 
 </html>

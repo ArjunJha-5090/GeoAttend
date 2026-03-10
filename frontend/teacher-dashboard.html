@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>GeoAttend — Teacher Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            padding-top: 0;
+            padding-bottom: 80px;
+            background: var(--bg-deep);
+        }
+
+        /* ── Top Bar ── */
+        .top-bar {
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .brand {
+            font-size: 1.05rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-wrap {
+            padding: 18px 16px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* ── Hero Summary ── */
+        .hero-summary {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.12));
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-summary::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .hs-label {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 3px;
+        }
+
+        .hs-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .hs-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+
+        .hs-stat {
+            text-align: center;
+        }
+
+        .hs-stat+.hs-stat {
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .hs-val {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .hs-lbl {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* ── Section label ── */
+        .sec-lbl {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 20px 0 10px;
+        }
+
+        /* ── Session Card ── */
+        .session-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 0;
+            margin-bottom: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .session-card:active {
+            transform: scale(0.99);
+        }
+
+        .session-header {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .session-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .session-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .session-subject {
+            font-size: 0.9rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .session-info {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .session-badges {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .badge-sm {
+            font-size: 0.68rem;
+            padding: 2px 8px;
+            border-radius: 100px;
+            font-weight: 600;
+        }
+
+        .badge-present {
+            background: rgba(16, 185, 129, 0.12);
+            color: #6ee7b7;
+        }
+
+        .badge-absent {
+            background: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
+        }
+
+        .badge-class {
+            background: rgba(99, 102, 241, 0.12);
+            color: #a5b4fc;
+        }
+
+        .session-right {
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .session-date {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .chevron {
+            font-size: 0.8rem;
+            color: var(--text-subtle);
+            margin-top: 4px;
+        }
+
+        /* ── Expanded Detail Panel ── */
+        .detail-panel {
+            display: none;
+            padding: 0 16px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            animation: slideIn 0.2s ease;
+        }
+
+        .detail-panel.open {
+            display: block;
+        }
+
+        /* ── Tabs ── */
+        .d-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border);
+            margin: 12px 0;
+        }
+
+        .d-tab {
+            flex: 1;
+            padding: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font);
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .d-tab.active {
+            color: var(--accent-3);
+            border-bottom-color: var(--accent-3);
+        }
+
+        /* ── Student rows ── */
+        .s-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .s-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .s-row:last-child {
+            border-bottom: none;
+        }
+
+        .s-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--gradient-hero);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.78rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .s-avatar.absent-av {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(220, 38, 38, 0.35));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .s-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .s-detail {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        .dist-pill {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--safe);
+            border-radius: 100px;
+            padding: 3px 8px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .absent-pill {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border-radius: 100px;
+            padding: 3px 8px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-subtle);
+            font-size: 0.8rem;
+        }
+
+        /* ── Loading skeleton ── */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.04) 75%);
+            background-size: 200% 100%;
+            animation: skeleton 1.4s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes skeleton {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        /* ── Bottom Nav ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding: 8px 0 env(safe-area-inset-bottom, 8px);
+            z-index: 100;
+        }
+
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 8px 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+
+        .nav-tab .ni {
+            font-size: 1.2rem;
+        }
+
+        .nav-tab .nl {
+            font-size: 0.63rem;
+            color: var(--text-subtle);
+        }
+
+        .nav-tab.active .nl {
+            color: var(--accent-3);
+        }
+
+        @media(min-width:600px) {
+            body {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            .bottom-nav {
+                max-width: 700px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <div class="brand">📍 GeoAttend</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <span id="teacherNameNav" style="font-size:0.78rem;color:var(--text-muted);"></span>
+            <button class="btn btn-outline" onclick="doSignOut()" style="padding:6px 12px;font-size:0.78rem;">Sign
+                Out</button>
+        </div>
+    </div>
+
+    <div class="page-wrap">
+
+        <div style="margin-bottom:16px;">
+            <h1 style="font-size:1.35rem;margin-bottom:3px;">📊 My Dashboard</h1>
+            <p style="color:var(--text-muted);font-size:0.82rem;">All your sessions with present & absent breakdown.</p>
+        </div>
+
+        <!-- Hero Summary -->
+        <div class="hero-summary">
+            <div class="hs-label">Overview</div>
+            <div class="hs-name" id="heroName">👩‍🏫 Teacher</div>
+            <div class="hs-stats">
+                <div class="hs-stat">
+                    <div class="hs-val" id="hsSessions">—</div>
+                    <div class="hs-lbl">Sessions</div>
+                </div>
+                <div class="hs-stat">
+                    <div class="hs-val" id="hsSubjects">—</div>
+                    <div class="hs-lbl">Subjects</div>
+                </div>
+                <div class="hs-stat">
+                    <div class="hs-val" id="hsTotal">—</div>
+                    <div class="hs-lbl">Students Tracked</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sessions List -->
+        <div class="sec-lbl">Session History</div>
+        <div id="sessionList">
+            <!-- Skeleton -->
+            <div class="session-card" style="cursor:default;">
+                <div class="session-header">
+                    <div class="skeleton" style="width:42px;height:42px;border-radius:12px;flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                        <div class="skeleton" style="width:55%;height:13px;margin-bottom:8px;"></div>
+                        <div class="skeleton" style="width:40%;height:10px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="session-card" style="cursor:default;">
+                <div class="session-header">
+                    <div class="skeleton" style="width:42px;height:42px;border-radius:12px;flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                        <div class="skeleton" style="width:65%;height:13px;margin-bottom:8px;"></div>
+                        <div class="skeleton" style="width:35%;height:10px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <button class="nav-tab" onclick="window.location.href='teacher.html'">
+            <span class="ni">📡</span><span class="nl">Session</span>
+        </button>
+        <button class="nav-tab active">
+            <span class="ni">📊</span><span class="nl">Dashboard</span>
+        </button>
+        <button class="nav-tab" onclick="doSignOut()">
+            <span class="ni">🚪</span><span class="nl">Sign Out</span>
+        </button>
+    </nav>
+
+    <script type="module">
+        import {
+            getSession, getProfile, signOut,
+            getTeacherSessions, getSessionRecords, getAbsentees
+        } from './supabase-client.js';
+
+        let currentUser = null, currentProfile = null;
+        let sessions = [];
+        // Cache records/absentees per session id
+        const cache = {};
+
+        // ── Auth ─────────────────────────────────────
+        (async () => {
+            const session = await getSession();
+            if (!session) { window.location.href = 'login.html'; return; }
+            currentUser = session.user;
+            currentProfile = await getProfile();
+            if (currentProfile?.role !== 'teacher') { window.location.href = 'index.html'; return; }
+
+            const name = currentProfile.full_name || currentUser.email;
+            document.getElementById('teacherNameNav').textContent = name;
+            document.getElementById('heroName').textContent = `👩‍🏫 ${name.split(' ')[0]}`;
+
+            await loadSessions();
+        })();
+
+        async function loadSessions() {
+            sessions = await getTeacherSessions(currentUser.id);
+
+            // Hero stats
+            const subjectSet = new Set(sessions.map(s => s.subject_name));
+            document.getElementById('hsSessions').textContent = sessions.length;
+            document.getElementById('hsSubjects').textContent = subjectSet.size;
+
+            // Total students tracked (sum of all records)
+            let total = 0;
+            for (const s of sessions.slice(0, 5)) { // estimate from recent sessions
+                const r = await getSessionRecords(s.id);
+                total += r.length;
+                cache[s.id] = { records: r };
+            }
+            document.getElementById('hsTotal').textContent = total + (sessions.length > 5 ? '+' : '');
+
+            renderSessions();
+        }
+
+        async function loadSessionDetail(sessionId) {
+            if (!cache[sessionId]) cache[sessionId] = {};
+            if (!cache[sessionId].records) cache[sessionId].records = await getSessionRecords(sessionId);
+            const session = sessions.find(s => s.id === sessionId);
+            if (!cache[sessionId].absentees) cache[sessionId].absentees = await getAbsentees(session);
+            return cache[sessionId];
+        }
+
+        // ── Render sessions list ─────────────────────
+        function renderSessions() {
+            const list = document.getElementById('sessionList');
+            if (sessions.length === 0) {
+                list.innerHTML = `<div class="empty" style="padding:40px 20px;"><div style="font-size:2rem;margin-bottom:8px;">📋</div><p>No sessions taken yet.<br/>Start one from the Session screen!</p></div>`;
+                return;
+            }
+
+            list.innerHTML = sessions.map((s, i) => {
+                const date = new Date(s.started_at);
+                const dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                const timeStr = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                const target = [s.target_branch, s.target_class, s.target_section && `Sec ${s.target_section}`].filter(Boolean).join(', ') || 'All Students';
+                const isActive = s.active;
+                const icons = ['📐', '🔬', '📖', '💻', '🧮', '🎨', '⚗️', '🌍', '🎵', '📝'];
+                const icon = icons[i % icons.length];
+
+                return `
+          <div class="session-card" id="card_${s.id}" onclick="toggleDetail('${s.id}')">
+            <div class="session-header">
+              <div class="session-icon-wrap">${icon}</div>
+              <div class="session-meta">
+                <div class="session-subject">${s.subject_name}</div>
+                <div class="session-info">🎓 ${target}</div>
+                <div class="session-badges">
+                  ${isActive ? '<span class="badge-sm badge-present" style="animation:pulse 1.5s infinite;">🟢 Live</span>' : ''}
+                  ${cache[s.id] ? `<span class="badge-sm badge-present">✅ ${cache[s.id].records.length} present</span>` : ''}
+                  <span class="badge-sm badge-class">📚 ${s.subject_name}</span>
+                </div>
+              </div>
+              <div class="session-right">
+                <div class="session-date">${dateStr}</div>
+                <div class="session-date">${timeStr}</div>
+                <div class="chevron" id="chev_${s.id}">›</div>
+              </div>
+            </div>
+            <div class="detail-panel" id="panel_${s.id}">
+              <div class="d-tabs">
+                <button class="d-tab active" id="dtab_present_${s.id}" onclick="event.stopPropagation();switchDetailTab('${s.id}','present')">✅ Present</button>
+                <button class="d-tab"        id="dtab_absent_${s.id}"  onclick="event.stopPropagation();switchDetailTab('${s.id}','absent')">🔴 Absent</button>
+              </div>
+              <div id="dpresent_${s.id}" class="s-list"><div class="empty">Loading...</div></div>
+              <div id="dabsent_${s.id}"  class="s-list" style="display:none;"><div class="empty">Loading...</div></div>
+            </div>
+          </div>`;
+            }).join('');
+        }
+
+        // ── Toggle expand ────────────────────────────
+        window.toggleDetail = async (sessionId) => {
+            const panel = document.getElementById(`panel_${sessionId}`);
+            const chev = document.getElementById(`chev_${sessionId}`);
+            const isOpen = panel.classList.contains('open');
+            // Close all panels
+            document.querySelectorAll('.detail-panel').forEach(p => { p.classList.remove('open'); });
+            document.querySelectorAll('.chevron').forEach(c => { c.textContent = '›'; c.style.transform = ''; });
+
+            if (!isOpen) {
+                panel.classList.add('open');
+                chev.textContent = '›';
+                chev.style.transform = 'rotate(90deg)';
+                const data = await loadSessionDetail(sessionId);
+                renderDetailLists(sessionId, data.records, data.absentees);
+            }
+        };
+
+        window.switchDetailTab = (sessionId, tab) => {
+            document.getElementById(`dtab_present_${sessionId}`).className = 'd-tab' + (tab === 'present' ? ' active' : '');
+            document.getElementById(`dtab_absent_${sessionId}`).className = 'd-tab' + (tab === 'absent' ? ' active' : '');
+            document.getElementById(`dpresent_${sessionId}`).style.display = tab === 'present' ? 'flex' : 'none';
+            document.getElementById(`dabsent_${sessionId}`).style.display = tab === 'absent' ? 'flex' : 'none';
+            document.getElementById(`dpresent_${sessionId}`).style.flexDirection = 'column';
+        };
+
+        function renderDetailLists(sessionId, records, absentees) {
+            // Update badges
+            const card = document.getElementById(`card_${sessionId}`);
+            const badgeWrap = card.querySelector('.session-badges');
+            if (badgeWrap) {
+                const absBadge = absentees.length > 0
+                    ? `<span class="badge-sm badge-absent">🔴 ${absentees.length} absent</span>` : '';
+                badgeWrap.innerHTML = `
+          <span class="badge-sm badge-present">✅ ${records.length} present</span>
+          ${absBadge}`;
+            }
+
+            // Present list
+            document.getElementById(`dpresent_${sessionId}`).innerHTML = records.length === 0
+                ? `<div class="empty">No students checked in.</div>`
+                : records.map(r => {
+                    const init = (r.student_name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                    const time = new Date(r.marked_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                    const detail = [r.roll_number, r.class_name, r.section && `Sec ${r.section}`, r.branch].filter(Boolean).join(' · ');
+                    return `<div class="s-row">
+              <div class="s-avatar">${init}</div>
+              <div style="flex:1;min-width:0;">
+                <div class="s-name">${r.student_name || 'Unknown'}</div>
+                <div class="s-detail">${detail || '—'}</div>
+                <div class="s-detail">🕐 ${time}</div>
+              </div>
+              <div class="dist-pill">📍 ${r.distance_m ?? '—'}m</div>
+            </div>`;
+                }).join('');
+
+            // Absent list
+            document.getElementById(`dabsent_${sessionId}`).innerHTML = absentees.length === 0
+                ? `<div class="empty">🎉 Everyone was present!</div>`
+                : absentees.map(s => {
+                    const init = (s.full_name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                    const detail = [s.roll_number, s.class_name, s.section && `Sec ${s.section}`, s.branch].filter(Boolean).join(' · ');
+                    return `<div class="s-row">
+              <div class="s-avatar absent-av">${init}</div>
+              <div style="flex:1;min-width:0;">
+                <div class="s-name">${s.full_name || 'Unknown'}</div>
+                <div class="s-detail">${detail || '—'}</div>
+              </div>
+              <div class="absent-pill">Absent</div>
+            </div>`;
+                }).join('');
+        }
+
+        window.doSignOut = async () => {
+            await signOut(); window.location.href = 'login.html';
+        };
+    </script>
+</body>
+
+</html>

@@ -1,25 +1,45 @@
 -- ============================================================
--- GeoAttend Supabase Schema
--- Run this in: Supabase Dashboard → SQL Editor → New Query
+-- GeoAttend Supabase Schema  (v2 — class-wise attendance)
+-- Safe to re-run: uses IF NOT EXISTS + DROP POLICY IF EXISTS
+-- Run in: Supabase Dashboard → SQL Editor → New Query
 -- ============================================================
 
--- 1. Profiles table — extends auth.users with role
+-- ─────────────────────────────────────────────
+-- 1. PROFILES (extends auth.users)
+-- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.profiles (
     id          UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     full_name   TEXT,
     role        TEXT NOT NULL DEFAULT 'student' CHECK (role IN ('teacher', 'student')),
+    -- Student fields
+    roll_number TEXT,
+    class_name  TEXT,   -- e.g. "B.Tech Year 2"
+    section     TEXT,   -- e.g. "A", "B", "C"
+    branch      TEXT,   -- e.g. "CSE", "IT", "ECE"
     created_at  TIMESTAMPTZ DEFAULT now()
 );
 
--- Auto-create a profile row when a user signs up
+-- Add columns to existing table (safe to re-run)
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS roll_number TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS class_name  TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS section     TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS branch      TEXT;
+
+-- ─────────────────────────────────────────────
+-- Auto-create profile on signup
+-- ─────────────────────────────────────────────
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.profiles (id, full_name, role)
+    INSERT INTO public.profiles (id, full_name, role, roll_number, class_name, section, branch)
     VALUES (
         NEW.id,
         NEW.raw_user_meta_data ->> 'full_name',
-        COALESCE(NEW.raw_user_meta_data ->> 'role', 'student')
+        COALESCE(NEW.raw_user_meta_data ->> 'role', 'student'),
+        NEW.raw_user_meta_data ->> 'roll_number',
+        NEW.raw_user_meta_data ->> 'class_name',
+        NEW.raw_user_meta_data ->> 'section',
+        NEW.raw_user_meta_data ->> 'branch'
     );
     RETURN NEW;
 END;
@@ -30,45 +50,66 @@ CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
--- 2. Attendance Sessions — created by teacher
+-- ─────────────────────────────────────────────
+-- 2. ATTENDANCE SESSIONS (teacher-created)
+-- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.attendance_sessions (
-    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    teacher_id   UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    teacher_name TEXT,
-    subject_name TEXT NOT NULL DEFAULT 'General',
-    lat          DOUBLE PRECISION NOT NULL,
-    lng          DOUBLE PRECISION NOT NULL,
-    radius       INTEGER DEFAULT 100,
-    active       BOOLEAN DEFAULT TRUE,
-    started_at   TIMESTAMPTZ DEFAULT now(),
-    ended_at     TIMESTAMPTZ
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    teacher_id     UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    teacher_name   TEXT,
+    subject_name   TEXT NOT NULL DEFAULT 'General',
+    -- Target class filter
+    target_class   TEXT,   -- e.g. "B.Tech Year 2"
+    target_section TEXT,   -- e.g. "A"  (empty = all sections)
+    target_branch  TEXT,   -- e.g. "CSE"
+    -- Geofence
+    lat            DOUBLE PRECISION NOT NULL,
+    lng            DOUBLE PRECISION NOT NULL,
+    radius         INTEGER DEFAULT 100,
+    active         BOOLEAN DEFAULT TRUE,
+    started_at     TIMESTAMPTZ DEFAULT now(),
+    ended_at       TIMESTAMPTZ
 );
 
--- Add subject_name to existing tables (safe to re-run)
-ALTER TABLE public.attendance_sessions ADD COLUMN IF NOT EXISTS subject_name TEXT NOT NULL DEFAULT 'General';
+-- Add columns to existing table (safe to re-run)
+ALTER TABLE public.attendance_sessions ADD COLUMN IF NOT EXISTS subject_name   TEXT NOT NULL DEFAULT 'General';
+ALTER TABLE public.attendance_sessions ADD COLUMN IF NOT EXISTS target_class   TEXT;
+ALTER TABLE public.attendance_sessions ADD COLUMN IF NOT EXISTS target_section TEXT;
+ALTER TABLE public.attendance_sessions ADD COLUMN IF NOT EXISTS target_branch  TEXT;
 
--- 3. Attendance Records — created by students
+-- ─────────────────────────────────────────────
+-- 3. ATTENDANCE RECORDS (student check-ins)
+-- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.attendance_records (
-    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    session_id  UUID REFERENCES public.attendance_sessions(id) ON DELETE CASCADE,
-    student_id  UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    session_id   UUID REFERENCES public.attendance_sessions(id) ON DELETE CASCADE,
+    student_id   UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     student_name TEXT,
-    student_lat DOUBLE PRECISION,
-    student_lng DOUBLE PRECISION,
-    distance_m  DOUBLE PRECISION,        -- distance from teacher at time of marking
-    marked_at   TIMESTAMPTZ DEFAULT now(),
-    UNIQUE(session_id, student_id)       -- prevent duplicate marks per session
+    roll_number  TEXT,
+    class_name   TEXT,
+    section      TEXT,
+    branch       TEXT,
+    student_lat  DOUBLE PRECISION,
+    student_lng  DOUBLE PRECISION,
+    distance_m   DOUBLE PRECISION,
+    marked_at    TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(session_id, student_id)
 );
 
--- ============================================================
--- Row Level Security (RLS)
--- ============================================================
+-- Add student-detail columns to existing records table (safe to re-run)
+ALTER TABLE public.attendance_records ADD COLUMN IF NOT EXISTS roll_number TEXT;
+ALTER TABLE public.attendance_records ADD COLUMN IF NOT EXISTS class_name  TEXT;
+ALTER TABLE public.attendance_records ADD COLUMN IF NOT EXISTS section     TEXT;
+ALTER TABLE public.attendance_records ADD COLUMN IF NOT EXISTS branch      TEXT;
 
+-- ============================================================
+-- Row Level Security
+-- ============================================================
 ALTER TABLE public.profiles            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.attendance_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.attendance_records  ENABLE ROW LEVEL SECURITY;
 
--- Drop existing policies (safe to re-run)
+-- Drop existing policies before recreating (safe to re-run)
 DROP POLICY IF EXISTS "Profiles are viewable by everyone"          ON public.profiles;
 DROP POLICY IF EXISTS "Users can update their own profile"         ON public.profiles;
 DROP POLICY IF EXISTS "Sessions viewable by all"                   ON public.attendance_sessions;
@@ -77,16 +118,12 @@ DROP POLICY IF EXISTS "Teachers can update their sessions"         ON public.att
 DROP POLICY IF EXISTS "Records viewable by all"                    ON public.attendance_records;
 DROP POLICY IF EXISTS "Students can mark their own attendance"     ON public.attendance_records;
 
--- Profiles: everyone can read, only own row can be updated
-CREATE POLICY "Profiles are viewable by everyone"   ON public.profiles FOR SELECT USING (true);
-CREATE POLICY "Users can update their own profile"  ON public.profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Profiles are viewable by everyone"      ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "Users can update their own profile"     ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
--- Sessions: anyone logged in can read; only teachers can insert/update
-CREATE POLICY "Sessions viewable by all"             ON public.attendance_sessions FOR SELECT USING (true);
-CREATE POLICY "Teachers can create sessions"         ON public.attendance_sessions FOR INSERT WITH CHECK (auth.uid() = teacher_id);
-CREATE POLICY "Teachers can update their sessions"   ON public.attendance_sessions FOR UPDATE USING (auth.uid() = teacher_id);
+CREATE POLICY "Sessions viewable by all"               ON public.attendance_sessions FOR SELECT USING (true);
+CREATE POLICY "Teachers can create sessions"           ON public.attendance_sessions FOR INSERT WITH CHECK (auth.uid() = teacher_id);
+CREATE POLICY "Teachers can update their sessions"     ON public.attendance_sessions FOR UPDATE USING (auth.uid() = teacher_id);
 
--- Records: anyone logged in can read; students insert their own
-CREATE POLICY "Records viewable by all"                    ON public.attendance_records FOR SELECT USING (true);
-CREATE POLICY "Students can mark their own attendance"     ON public.attendance_records FOR INSERT WITH CHECK (auth.uid() = student_id);
-
+CREATE POLICY "Records viewable by all"                ON public.attendance_records FOR SELECT USING (true);
+CREATE POLICY "Students can mark their own attendance" ON public.attendance_records FOR INSERT WITH CHECK (auth.uid() = student_id);

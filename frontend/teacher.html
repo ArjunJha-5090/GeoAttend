@@ -13,12 +13,11 @@
             background: var(--bg-deep);
         }
 
-        /* ── Top Bar ── */
         .top-bar {
             background: rgba(10, 10, 20, 0.95);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 16px 20px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -28,8 +27,8 @@
             z-index: 50;
         }
 
-        .top-bar .brand {
-            font-size: 1.1rem;
+        .brand {
+            font-size: 1.05rem;
             font-weight: 800;
             background: var(--gradient-hero);
             -webkit-background-clip: text;
@@ -37,68 +36,75 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .top-bar .t-name {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-        }
-
-        /* ── Main Content ── */
         .page-wrap {
-            padding: 20px 16px;
-            max-width: 680px;
+            padding: 18px 16px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
-        /* ── Session Card ── */
+        /* Session Card */
         .session-card {
-            border-radius: 20px;
-            padding: 22px 20px;
+            border-radius: 18px;
+            padding: 20px;
             border: 1px solid var(--border);
             background: var(--bg-card);
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             transition: var(--transition);
         }
 
-        .session-card.active-session {
-            background: rgba(16, 185, 129, 0.06);
+        .session-card.live {
+            background: rgba(16, 185, 129, 0.05);
             border-color: rgba(16, 185, 129, 0.35);
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.08);
+            box-shadow: 0 0 28px rgba(16, 185, 129, 0.07);
         }
 
-        .session-top {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 18px;
-        }
-
-        .session-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            flex-shrink: 0;
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-        }
-
-        .session-icon.live {
-            background: rgba(16, 185, 129, 0.15);
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-
-        .session-title {
-            font-size: 1rem;
+        /* Form fields within card */
+        .field-label {
+            font-size: 0.68rem;
             font-weight: 700;
-            margin-bottom: 2px;
+            color: var(--text-subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
         }
 
-        .session-sub {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        .field-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px 13px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: var(--font);
+            outline: none;
+            transition: var(--transition);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .field-input:focus {
+            border-color: var(--accent-3);
+        }
+
+        .field-input option {
+            background: #1a1a2e;
+        }
+
+        .field-wrap {
+            margin-bottom: 12px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         .pulse-dot {
@@ -111,199 +117,191 @@
             animation: pulse 1.5s infinite;
         }
 
-        /* ── Subject Input (shown when inactive) ── */
-        .subject-input-wrap {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 14px;
-        }
-
-        .subject-input-wrap label {
-            display: block;
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-subtle);
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .subject-input-wrap input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text);
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: var(--font);
-            padding: 0;
-        }
-
-        .subject-input-wrap input::placeholder {
-            color: var(--text-subtle);
-            font-weight: 400;
-        }
-
-        /* ── Active Session Info Chips ── */
+        /* Active info chips */
         .info-chips {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .info-chip {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            padding: 5px 12px;
-            font-size: 0.76rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
             gap: 6px;
+            margin-bottom: 14px;
         }
 
-        .info-chip.sub-chip {
+        .chip {
             background: rgba(99, 102, 241, 0.1);
-            border-color: rgba(99, 102, 241, 0.25);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 100px;
+            padding: 4px 10px;
+            font-size: 0.73rem;
             color: #a5b4fc;
         }
 
-        /* ── Buttons ── */
+        .chip.green {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
         .btn-row {
             display: flex;
             gap: 10px;
         }
 
-        /* ── Stats strip ── */
+        /* Stats strip */
         .stats-strip {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .stat-tile {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 14px 12px;
+            padding: 13px;
             text-align: center;
         }
 
-        .stat-tile .t-val {
+        .stat-tile .tv {
             font-size: 1.4rem;
-            font-weight: 800;
+            font-weight: 900;
             background: var(--gradient-hero);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .stat-tile .t-lbl {
-            font-size: 0.68rem;
+        .stat-tile .tl {
+            font-size: 0.65rem;
             color: var(--text-subtle);
-            margin-top: 3px;
             text-transform: uppercase;
             letter-spacing: 0.07em;
+            margin-top: 2px;
         }
 
-        /* ── Student List ── */
-        .attendance-list {
+        /* Tabs for present/absent */
+        .list-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 14px;
+        }
+
+        .list-tab {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .list-tab.active {
+            color: var(--accent-3);
+            border-bottom-color: var(--accent-3);
+        }
+
+        /* Student rows */
+        .s-list {
             display: flex;
             flex-direction: column;
             gap: 0;
         }
 
-        .att-item {
+        .s-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 13px 0;
+            gap: 10px;
+            padding: 11px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            animation: slideIn 0.25s ease;
+            animation: slideIn 0.2s ease;
         }
 
-        .att-item:last-child {
+        .s-row:last-child {
             border-bottom: none;
         }
 
-        .att-avatar {
-            width: 40px;
-            height: 40px;
+        .s-avatar {
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background: var(--gradient-hero);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: white;
             flex-shrink: 0;
         }
 
-        .att-meta {
+        .s-avatar.absent {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(220, 38, 38, 0.4));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .s-meta {
             flex: 1;
             min-width: 0;
         }
 
-        .att-name {
-            font-size: 0.92rem;
+        .s-name {
+            font-size: 0.88rem;
             font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .att-time {
-            font-size: 0.75rem;
+        .s-detail {
+            font-size: 0.72rem;
             color: var(--text-muted);
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
-        .att-dist {
+        .s-right {
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .dist-badge {
             background: rgba(16, 185, 129, 0.1);
             color: var(--safe);
             border-radius: 100px;
-            padding: 4px 10px;
-            font-size: 0.74rem;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        /* ── Section heading ── */
-        .section-lbl {
+            padding: 3px 8px;
             font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-subtle);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin: 20px 0 12px;
+            font-weight: 600;
         }
 
-        /* ── Empty State ── */
+        .absent-badge {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border-radius: 100px;
+            padding: 3px 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
         .empty {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             color: var(--text-subtle);
         }
 
-        .empty .e-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .empty .ei {
+            font-size: 2rem;
+            margin-bottom: 8px;
         }
 
-        .empty h3 {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
+        .empty p {
+            font-size: 0.82rem;
         }
 
-        /* ── Bottom Nav ── */
+        /* Bottom nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -332,28 +330,27 @@
             font-family: var(--font);
         }
 
-        .nav-tab .nav-icon {
-            font-size: 1.25rem;
+        .nav-tab .ni {
+            font-size: 1.2rem;
         }
 
-        .nav-tab .nav-lbl {
-            font-size: 0.65rem;
+        .nav-tab .nl {
+            font-size: 0.63rem;
             color: var(--text-subtle);
-            font-weight: 500;
         }
 
-        .nav-tab.active .nav-lbl {
+        .nav-tab.active .nl {
             color: var(--accent-3);
         }
 
-        @media (min-width: 600px) {
+        @media (min-width:600px) {
             body {
-                max-width: 680px;
+                max-width: 700px;
                 margin: 0 auto;
             }
 
             .bottom-nav {
-                max-width: 680px;
+                max-width: 700px;
                 left: 50%;
                 transform: translateX(-50%);
             }
@@ -363,98 +360,129 @@
 
 <body>
 
-    <!-- ── TOP BAR ── -->
     <div class="top-bar">
         <div class="brand">📍 GeoAttend</div>
         <div style="display:flex;align-items:center;gap:8px;">
-            <span class="t-name" id="teacherNameNav"></span>
-            <button class="btn btn-outline" onclick="doSignOut()" style="padding:7px 14px;font-size:0.8rem;">Sign
+            <span id="teacherNameNav" style="font-size:0.78rem;color:var(--text-muted);"></span>
+            <button class="btn btn-outline" onclick="doSignOut()" style="padding:6px 12px;font-size:0.78rem;">Sign
                 Out</button>
         </div>
     </div>
 
     <div class="page-wrap">
+        <h1 style="font-size:1.35rem;margin-bottom:4px;">👩‍🏫 Teacher Portal</h1>
+        <p style="color:var(--text-muted);font-size:0.82rem;margin-bottom:18px;">Start a class-targeted session. Only
+            students from that class can mark attendance.</p>
 
-        <!-- ── Page Title ── -->
-        <div style="margin-bottom:20px;">
-            <h1 style="font-size:1.5rem;margin-bottom:4px;">👩‍🏫 Teacher Portal</h1>
-            <p style="color:var(--text-muted);font-size:0.85rem;">Start a session with your GPS. Students within 100m
-                can check in.</p>
-        </div>
-
-        <!-- ── Alert ── -->
-        <div id="alertBox" class="alert" style="margin-bottom:16px;"></div>
+        <div id="alertBox" class="alert" style="margin-bottom:14px;"></div>
 
         <!-- ── Session Card ── -->
         <div id="sessionCard" class="session-card">
-
-            <div class="session-top">
-                <div class="session-icon" id="sessionIcon">📡</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+                <div id="sessionIcon" style="font-size:1.4rem;">📡</div>
                 <div>
-                    <div class="session-title" id="sessionTitle">No Active Session</div>
-                    <div class="session-sub" id="sessionSub">Set a subject and start attendance</div>
+                    <div style="font-weight:700;font-size:0.95rem;" id="sessionTitle">Start a New Session</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);" id="sessionSub">Fill in the details below
+                    </div>
                 </div>
             </div>
 
-            <!-- Subject Input (shown when inactive) -->
-            <div id="subjectInputWrap" class="subject-input-wrap">
-                <label>📚 Subject Name</label>
-                <input type="text" id="subjectInput" placeholder="e.g. Data Structures, OOP, Maths..." maxlength="50" />
-            </div>
+            <!-- Inactive: form fields -->
+            <div id="startForm">
+                <div class="field-wrap">
+                    <div class="field-label">📚 Subject Name</div>
+                    <input class="field-input" type="text" id="subjectInput" placeholder="e.g. Data Structures"
+                        maxlength="60" />
+                </div>
 
-            <!-- Active Session Info Chips (shown when active) -->
-            <div id="activeChips" class="info-chips" style="display:none;"></div>
+                <div class="grid-3" style="margin-bottom:10px;">
+                    <div>
+                        <div class="field-label">Year / Class</div>
+                        <select class="field-input" id="targetClass">
+                            <option value="">All Classes</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="field-label">Section</div>
+                        <select class="field-input" id="targetSection">
+                            <option value="">All Sections</option>
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="field-label">Branch</div>
+                        <select class="field-input" id="targetBranch">
+                            <option value="">All Branches</option>
+                            <option value="CSE">CSE</option>
+                            <option value="IT">IT</option>
+                            <option value="ECE">ECE</option>
+                            <option value="EEE">EEE</option>
+                            <option value="ME">ME</option>
+                            <option value="CE">CE</option>
+                        </select>
+                    </div>
+                </div>
 
-            <!-- Buttons -->
-            <div class="btn-row">
-                <button class="btn btn-primary" id="startBtn" onclick="startAttendance()" style="flex:1;">
+                <button class="btn btn-primary" onclick="startAttendance()" style="width:100%;">
                     <span id="startBtnText">📡 Start Session</span>
                     <div class="spinner" id="startSpinner"></div>
                 </button>
-                <button class="btn btn-outline" id="endBtn" onclick="endAttendance()"
-                    style="display:none;flex:1;border-color:var(--danger);color:var(--danger);">
-                    ⏹ End Session
-                </button>
+            </div>
+
+            <!-- Active: info chips -->
+            <div id="activeChips" class="info-chips" style="display:none;"></div>
+            <div class="btn-row" id="endBtnRow" style="display:none;">
+                <button class="btn btn-outline" onclick="endAttendance()"
+                    style="flex:1;border-color:var(--danger);color:var(--danger);">⏹ End Session</button>
             </div>
         </div>
 
-        <!-- ── Live Stats (shown when active) ── -->
+        <!-- Stats -->
         <div id="statsStrip" class="stats-strip" style="display:none;">
             <div class="stat-tile">
-                <div class="t-val" id="statCount">0</div>
-                <div class="t-lbl">Present</div>
+                <div class="tv" id="statPresent">0</div>
+                <div class="tl">Present</div>
             </div>
             <div class="stat-tile">
-                <div class="t-val">100m</div>
-                <div class="t-lbl">Radius</div>
+                <div class="tv" id="statAbsent">—</div>
+                <div class="tl">Absent</div>
             </div>
             <div class="stat-tile">
-                <div class="t-val" id="statTime">—</div>
-                <div class="t-lbl">Started</div>
+                <div class="tv">100m</div>
+                <div class="tl">Radius</div>
             </div>
         </div>
 
-        <!-- ── Student Attendance List ── -->
+        <!-- Present / Absent list -->
         <div id="listSection" style="display:none;">
-            <div class="section-lbl" style="display:flex;align-items:center;justify-content:space-between;">
-                <span>Present Students</span>
-                <span id="countBadge"
-                    style="background:var(--gradient-hero);color:#fff;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:100px;">0</span>
+            <div class="list-tabs">
+                <button class="list-tab active" id="tabPresent" onclick="showTab('present')">✅ Present (<span
+                        id="presentCount">0</span>)</button>
+                <button class="list-tab" id="tabAbsent" onclick="showTab('absent')">🔴 Absent (<span
+                        id="absentCount">—</span>)</button>
             </div>
-            <div id="studentList" class="attendance-list"></div>
+            <div id="presentList" class="s-list"></div>
+            <div id="absentList" class="s-list" style="display:none;"></div>
         </div>
-
     </div>
 
-    <!-- ── Bottom Nav ── -->
+    <!-- Bottom Nav -->
     <nav class="bottom-nav">
-        <button class="nav-tab active">
-            <span class="nav-icon">👩‍🏫</span>
-            <span class="nav-lbl">Session</span>
+        <button class="nav-tab active" onclick="">
+            <span class="ni">📡</span><span class="nl">Session</span>
+        </button>
+        <button class="nav-tab" onclick="window.location.href='teacher-dashboard.html'">
+            <span class="ni">📊</span><span class="nl">My Dashboard</span>
         </button>
         <button class="nav-tab" onclick="doSignOut()">
-            <span class="nav-icon">🚪</span>
-            <span class="nav-lbl">Sign Out</span>
+            <span class="ni">🚪</span><span class="nl">Sign Out</span>
         </button>
     </nav>
 
@@ -462,211 +490,197 @@
         import {
             getSession, getProfile, signOut,
             startSession, endSession, getActiveSession,
-            getSessionRecords, subscribeToRecords
+            getSessionRecords, getAbsentees, subscribeToRecords
         } from './supabase-client.js';
 
-        let currentSession = null;
-        let currentUser = null;
-        let currentProfile = null;
-        let recordsSub = null;
-        let records = [];
+        let currentSession = null, currentUser = null, currentProfile = null;
+        let recordsSub = null, records = [], absentees = [];
+        let activeTab = 'present';
 
-        // ── Auth guard ──────────────────────────────────
+        // ── Auth ─────────────────────────────────────
         (async () => {
             const session = await getSession();
             if (!session) { window.location.href = 'login.html'; return; }
             currentUser = session.user;
-
             currentProfile = await getProfile();
             if (currentProfile?.role !== 'teacher') { window.location.href = 'index.html'; return; }
-
-            const name = currentProfile.full_name || currentUser.email;
-            document.getElementById('teacherNameNav').textContent = name;
-
-            // Check existing active session
+            document.getElementById('teacherNameNav').textContent = currentProfile.full_name || currentUser.email;
             await checkExistingSession();
         })();
 
         async function checkExistingSession() {
             try {
-                const session = await getActiveSession();
-                if (session && session.teacher_id === currentUser.id) {
-                    currentSession = session;
+                const s = await getActiveSession();
+                if (s && s.teacher_id === currentUser.id) {
+                    currentSession = s;
                     showActiveUI();
-                    await loadRecords();
+                    await loadEverything();
                 }
-            } catch (e) { /* no session */ }
+            } catch (e) { }
         }
 
-        // ── Start Session ──────────────────────────────
+        // ── Start ────────────────────────────────────
         window.startAttendance = () => {
             const subject = document.getElementById('subjectInput').value.trim();
-            if (!subject) {
-                showAlert('alertBox', 'error', '❌ Please enter a subject name first.');
-                document.getElementById('subjectInput').focus();
-                return;
-            }
+            if (!subject) { showAlert('error', '❌ Enter a subject name first.'); document.getElementById('subjectInput').focus(); return; }
+
+            const tClass = document.getElementById('targetClass').value;
+            const tSection = document.getElementById('targetSection').value;
+            const tBranch = document.getElementById('targetBranch').value;
 
             setBtnLoading(true);
-            showAlert('alertBox', 'info', '📡 Fetching your GPS location...');
+            showAlert('info', '📡 Fetching GPS location...');
 
-            if (!navigator.geolocation) {
-                showAlert('alertBox', 'error', 'Geolocation not supported.');
-                setBtnLoading(false);
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                async (pos) => {
-                    const { latitude: lat, longitude: lng } = pos.coords;
-                    try {
-                        const name = currentProfile.full_name || currentUser.email;
-                        currentSession = await startSession(currentUser.id, name, subject, lat, lng, 100);
-                        showAlert('alertBox', 'success', `✅ "${subject}" session started! Students within 100m can now check in.`);
-                        showActiveUI();
-                        await loadRecords();
-                    } catch (err) {
-                        showAlert('alertBox', 'error', err.message);
-                        setBtnLoading(false);
-                    }
-                },
-                (err) => {
-                    showAlert('alertBox', 'error', '❌ GPS error: ' + err.message);
-                    setBtnLoading(false);
-                },
-                { enableHighAccuracy: true, timeout: 10000 }
-            );
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const { latitude: lat, longitude: lng } = pos.coords;
+                try {
+                    const name = currentProfile.full_name || currentUser.email;
+                    currentSession = await startSession(currentUser.id, name, subject, tClass, tSection, tBranch, lat, lng, 100);
+                    showAlert('success', `✅ "${subject}" session live! ${buildTargetLabel()} within 100m can check in.`);
+                    showActiveUI();
+                    await loadEverything();
+                } catch (err) { showAlert('error', err.message); setBtnLoading(false); }
+            }, (err) => { showAlert('error', '❌ GPS: ' + err.message); setBtnLoading(false); }, { enableHighAccuracy: true, timeout: 10000 });
         };
 
-        // ── End Session ────────────────────────────────
+        // ── End ──────────────────────────────────────
         window.endAttendance = async () => {
             if (!currentSession) return;
-            try {
-                await endSession(currentUser.id);
-                showAlert('alertBox', 'info', `⏹ Session ended. ${records.length} student(s) were present.`);
-                currentSession = null;
-                records = [];
-                if (recordsSub) recordsSub.unsubscribe();
-                showInactiveUI();
-            } catch (err) {
-                showAlert('alertBox', 'error', err.message);
-            }
+            await endSession(currentUser.id);
+            showAlert('info', `⏹ Session ended. ${records.length} present.`);
+            currentSession = null; records = []; absentees = [];
+            if (recordsSub) recordsSub.unsubscribe();
+            showInactiveUI();
         };
 
-        // ── Load & Subscribe ────────────────────────────
-        async function loadRecords() {
-            if (!currentSession) return;
+        // ── Data ────────────────────────────────────
+        async function loadEverything() {
             records = await getSessionRecords(currentSession.id);
-            renderRecords();
+            absentees = await getAbsentees(currentSession);
+            renderLists();
             subscribeRealtime();
         }
 
         function subscribeRealtime() {
-            if (!currentSession) return;
             if (recordsSub) recordsSub.unsubscribe();
             import('./supabase-client.js').then(({ subscribeToRecords }) => {
-                recordsSub = subscribeToRecords(currentSession.id, (payload) => {
+                recordsSub = subscribeToRecords(currentSession.id, async (payload) => {
                     if (payload.new) {
                         records.unshift(payload.new);
-                        renderRecords();
+                        absentees = await getAbsentees(currentSession);
+                        renderLists();
                     }
                 });
             });
         }
 
-        // ── Render ─────────────────────────────────────
-        function renderRecords() {
-            const list = document.getElementById('studentList');
-            const n = records.length;
-            document.getElementById('statCount').textContent = n;
-            document.getElementById('countBadge').textContent = n;
+        // ── Render ───────────────────────────────────
+        function renderLists() {
+            const pCount = records.length;
+            const aCount = absentees.length;
+            document.getElementById('statPresent').textContent = pCount;
+            document.getElementById('statAbsent').textContent = aCount;
+            document.getElementById('presentCount').textContent = pCount;
+            document.getElementById('absentCount').textContent = aCount;
 
-            if (n === 0) {
-                list.innerHTML = `
-          <div class="empty">
-            <div class="e-icon">⏳</div>
-            <h3>Waiting for students...</h3>
-            <p>Students within 100m can mark attendance now.</p>
+            // Present
+            document.getElementById('presentList').innerHTML = pCount === 0 ?
+                `<div class="empty"><div class="ei">⏳</div><p>Waiting for students to check in...</p></div>` :
+                records.map(r => {
+                    const init = (r.student_name || 'S').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                    const time = new Date(r.marked_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                    const detail = [r.roll_number, r.class_name, r.section && `Sec ${r.section}`, r.branch].filter(Boolean).join(' • ');
+                    return `<div class="s-row">
+            <div class="s-avatar">${init}</div>
+            <div class="s-meta"><div class="s-name">${r.student_name || 'Unknown'}</div><div class="s-detail">${detail}</div><div class="s-detail">🕐 ${time}</div></div>
+            <div class="s-right"><div class="dist-badge">📍 ${r.distance_m ?? '—'}m</div></div>
           </div>`;
-                return;
-            }
+                }).join('');
 
-            list.innerHTML = records.map(r => {
-                const initials = (r.student_name || 'S').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-                const time = new Date(r.marked_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-                return `
-          <div class="att-item">
-            <div class="att-avatar">${initials}</div>
-            <div class="att-meta">
-              <div class="att-name">${r.student_name || 'Unknown'}</div>
-              <div class="att-time">🕐 ${time}</div>
-            </div>
-            <div class="att-dist">📍 ${r.distance_m ?? '—'}m</div>
+            // Absent
+            document.getElementById('absentList').innerHTML = aCount === 0 ?
+                `<div class="empty"><div class="ei">🎉</div><p>Everyone is present!</p></div>` :
+                absentees.map(s => {
+                    const init = (s.full_name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                    const detail = [s.roll_number, s.class_name, s.section && `Sec ${s.section}`, s.branch].filter(Boolean).join(' • ');
+                    return `<div class="s-row">
+            <div class="s-avatar absent">${init}</div>
+            <div class="s-meta"><div class="s-name">${s.full_name || 'Unknown'}</div><div class="s-detail">${detail}</div></div>
+            <div class="s-right"><div class="absent-badge">Absent</div></div>
           </div>`;
-            }).join('');
+                }).join('');
         }
 
-        // ── UI State ───────────────────────────────────
+        // ── Tabs ─────────────────────────────────────
+        window.showTab = (tab) => {
+            activeTab = tab;
+            document.getElementById('tabPresent').className = 'list-tab' + (tab === 'present' ? ' active' : '');
+            document.getElementById('tabAbsent').className = 'list-tab' + (tab === 'absent' ? ' active' : '');
+            document.getElementById('presentList').style.display = tab === 'present' ? 'flex' : 'none';
+            document.getElementById('absentList').style.display = tab === 'absent' ? 'flex' : 'none';
+            document.getElementById('presentList').style.flexDirection = 'column';
+        };
+
+        // ── UI helpers ────────────────────────────────
         function showActiveUI() {
-            document.getElementById('sessionCard').className = 'session-card active-session';
-            document.getElementById('sessionIcon').className = 'session-icon live';
+            document.getElementById('sessionCard').className = 'session-card live';
             document.getElementById('sessionIcon').textContent = '🟢';
             document.getElementById('sessionTitle').innerHTML = `<span class="pulse-dot"></span> Session Live`;
-            document.getElementById('sessionSub').textContent = `Subject: ${currentSession.subject_name}`;
-
-            document.getElementById('subjectInputWrap').style.display = 'none';
-            document.getElementById('startBtn').style.display = 'none';
-            document.getElementById('endBtn').style.display = 'flex';
+            document.getElementById('sessionSub').textContent = `${currentSession.subject_name} · ${buildTargetLabel()}`;
+            document.getElementById('startForm').style.display = 'none';
+            document.getElementById('endBtnRow').style.display = 'flex';
             document.getElementById('statsStrip').style.display = 'grid';
             document.getElementById('listSection').style.display = 'block';
 
-            // Active chips
-            const t = new Date(currentSession.started_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('statTime').textContent = t;
-            document.getElementById('activeChips').style.display = 'flex';
-            document.getElementById('activeChips').innerHTML = `
-        <div class="info-chip sub-chip">📚 ${currentSession.subject_name}</div>
-        <div class="info-chip">📍 ${parseFloat(currentSession.lat).toFixed(4)}, ${parseFloat(currentSession.lng).toFixed(4)}</div>
-        <div class="info-chip">📏 100m radius</div>`;
+            const chips = [
+                `📚 ${currentSession.subject_name}`,
+                currentSession.target_class && `🎓 ${currentSession.target_class}`,
+                currentSession.target_section && `Section ${currentSession.target_section}`,
+                currentSession.target_branch && `🔬 ${currentSession.target_branch}`,
+                `📍 ${parseFloat(currentSession.lat).toFixed(4)}, ${parseFloat(currentSession.lng).toFixed(4)}`,
+                '📏 100m radius'
+            ].filter(Boolean);
 
+            document.getElementById('activeChips').style.display = 'flex';
+            document.getElementById('activeChips').innerHTML = chips.map(c => `<div class="chip">${c}</div>`).join('');
             setBtnLoading(false);
-            renderRecords();
         }
 
         function showInactiveUI() {
             document.getElementById('sessionCard').className = 'session-card';
-            document.getElementById('sessionIcon').className = 'session-icon';
             document.getElementById('sessionIcon').textContent = '📡';
-            document.getElementById('sessionTitle').textContent = 'No Active Session';
-            document.getElementById('sessionSub').textContent = 'Set a subject and start attendance';
-
-            document.getElementById('subjectInputWrap').style.display = 'block';
+            document.getElementById('sessionTitle').textContent = 'Start a New Session';
+            document.getElementById('sessionSub').textContent = 'Fill in the details below';
+            document.getElementById('startForm').style.display = 'block';
+            document.getElementById('endBtnRow').style.display = 'none';
             document.getElementById('activeChips').style.display = 'none';
-            document.getElementById('startBtn').style.display = 'flex';
-            document.getElementById('endBtn').style.display = 'none';
             document.getElementById('statsStrip').style.display = 'none';
             document.getElementById('listSection').style.display = 'none';
+        }
+
+        function buildTargetLabel() {
+            const s = currentSession;
+            const parts = [s?.target_branch, s?.target_class, s?.target_section && `Sec ${s.target_section}`].filter(Boolean);
+            return parts.length ? parts.join(', ') : 'All students';
+        }
+
+        function showAlert(type, msg) {
+            const el = document.getElementById('alertBox');
+            el.className = `alert alert-${type} show`;
+            el.innerHTML = `<span></span><span>${msg}</span>`;
         }
 
         function setBtnLoading(loading) {
             document.getElementById('startBtnText').textContent = loading ? 'Getting GPS...' : '📡 Start Session';
             document.getElementById('startSpinner').className = loading ? 'spinner active' : 'spinner';
-            document.getElementById('startBtn').disabled = loading;
-        }
-
-        function showAlert(id, type, msg) {
-            const el = document.getElementById(id);
-            el.className = `alert alert-${type} show`;
-            el.innerHTML = `<span></span><span>${msg}</span>`;
+            document.getElementById('startBtn') && (document.getElementById('startBtn').disabled = loading);
         }
 
         window.doSignOut = async () => {
             if (currentSession) await endSession(currentUser.id).catch(() => { });
-            await signOut();
-            window.location.href = 'login.html';
+            await signOut(); window.location.href = 'login.html';
         };
     </script>
-
 </body>
 
 </html>
