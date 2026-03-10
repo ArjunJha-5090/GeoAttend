@@ -408,13 +408,8 @@
                     </div>
                     <div>
                         <div class="field-label">Section</div>
-                        <select class="field-input" id="targetSection">
-                            <option value="">All Sections</option>
-                            <option value="A">Section A</option>
-                            <option value="B">Section B</option>
-                            <option value="C">Section C</option>
-                            <option value="D">Section D</option>
-                        </select>
+                        <input class="field-input" type="text" id="targetSection" placeholder="e.g. E1, CS-2A..."
+                            maxlength="20" />
                     </div>
                     <div>
                         <div class="field-label">Branch</div>
@@ -481,8 +476,8 @@
         <button class="nav-tab" onclick="window.location.href='teacher-dashboard.html'">
             <span class="ni">📊</span><span class="nl">My Dashboard</span>
         </button>
-        <button class="nav-tab" onclick="doSignOut()">
-            <span class="ni">🚪</span><span class="nl">Sign Out</span>
+        <button class="nav-tab" onclick="window.location.href='profile.html'">
+            <span class="ni">👤</span><span class="nl">Profile</span>
         </button>
     </nav>
 

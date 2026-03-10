@@ -18,6 +18,7 @@
     <div style="display:flex; align-items:center; gap:10px;">
       <span id="userNavName" style="color:var(--text-muted);font-size:0.85rem;"></span>
       <a href="student-dashboard.html" class="nav-link">Dashboard</a>
+      <a href="profile.html" class="nav-link">Profile</a>
       <button class="btn btn-outline" onclick="doSignOut()" style="padding:8px 16px;font-size:0.85rem;">Sign
         Out</button>
     </div>
@@ -227,8 +228,7 @@
           showDistanceBar(dist, activeSession.radius || 100);
 
           try {
-            const name = currentProfile?.full_name || currentUser.email;
-            const result = await sbMarkAttendance(activeSession, currentUser.id, name, lat, lng);
+            const result = await sbMarkAttendance(activeSession, currentProfile, lat, lng);
             showAlert('alertBox', 'success', `✅ Attendance marked! You were ${result.distance}m from the teacher.`);
             document.getElementById('markBtn').disabled = true;
             document.getElementById('alreadyMarked').style.display = 'block';

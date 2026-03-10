@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>GeoAttend — Profile</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            padding-top: 0;
+            padding-bottom: 80px;
+            background: var(--bg-deep);
+        }
+
+        .top-bar {
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .brand {
+            font-size: 1.05rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-wrap {
+            padding: 18px 16px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .avatar-sec {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-hero);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(99, 102, 241, 0.15);
+            color: #a5b4fc;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--text);
+            font-size: 0.92rem;
+            font-family: var(--font);
+            outline: none;
+            transition: var(--transition);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent-3);
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .form-group input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-group select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .alert {
+            margin-bottom: 18px;
+        }
+
+        .action-btns {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding: 8px 0 env(safe-area-inset-bottom, 8px);
+            z-index: 100;
+        }
+
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 8px 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+
+        .nav-tab .ni {
+            font-size: 1.2rem;
+        }
+
+        .nav-tab .nl {
+            font-size: 0.63rem;
+            color: var(--text-subtle);
+        }
+
+        .nav-tab.active .nl {
+            color: var(--accent-3);
+        }
+
+        @media (min-width: 600px) {
+            body {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            .bottom-nav {
+                max-width: 700px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <div class="brand">📍 GeoAttend</div>
+    </div>
+
+    <div class="page-wrap">
+        <div style="margin-bottom:16px;">
+            <h1 style="font-size:1.35rem;margin-bottom:3px;">👤 My Profile</h1>
+            <p style="color:var(--text-muted);font-size:0.82rem;">View and update your personal details.</p>
+        </div>
+
+        <div class="profile-card">
+            <div id="alertBox" class="alert"></div>
+
+            <div class="avatar-sec">
+                <div class="avatar-circle" id="userInitials">?</div>
+                <div>
+                    <span class="role-badge" id="userRoleBadge">Loading...</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="pName" placeholder="Your Name" />
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="pEmail" disabled title="Email cannot be changed here" />
+            </div>
+
+            <!-- Student specific fields -->
+            <div id="studentFields" style="display:none; animation: slideIn 0.25s ease;">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Roll Number</label>
+                        <input type="text" id="pRoll" placeholder="e.g. 2201234" />
+                    </div>
+                    <div class="form-group">
+                        <label>Branch</label>
+                        <select id="pBranch">
+                            <option value="">Select Branch</option>
+                            <option value="CSE">CSE</option>
+                            <option value="IT">IT</option>
+                            <option value="ECE">ECE</option>
+                            <option value="EEE">EEE</option>
+                            <option value="ME">ME</option>
+                            <option value="CE">CE</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Year / Class</label>
+                        <select id="pClass">
+                            <option value="">Select Year</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Section</label>
+                        <input type="text" id="pSection" placeholder="e.g. E1, CS-2A..." maxlength="20" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-btns">
+                <button class="btn btn-primary" onclick="saveProfile()" style="padding:12px;">
+                    <span id="saveBtnText">💾 Save Changes</span>
+                    <div class="spinner" id="saveSpinner"></div>
+                </button>
+                <button class="btn btn-outline" onclick="doSignOut()"
+                    style="padding:12px; border-color:var(--danger); color:var(--danger);">
+                    🚪 Sign Out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Bottom Nav based on role -->
+    <nav class="bottom-nav" id="botNav">
+        <!-- Populated in JS -->
+    </nav>
+
+    <script type="module">
+        import { getSession, getProfile, updateProfile, signOut } from './supabase-client.js';
+
+        let currentUser = null;
+        let currentProfile = null;
+
+        (async () => {
+            const session = await getSession();
+            if (!session) { window.location.href = 'login.html'; return; }
+            currentUser = session.user;
+
+            try {
+                currentProfile = await getProfile();
+                populateData();
+                renderNav();
+            } catch (e) {
+                showAlert('error', '❌ Could not load profile: ' + e.message);
+            }
+        })();
+
+        function populateData() {
+            // Initials and Role
+            const name = currentProfile.full_name || currentUser.email || '?';
+            document.getElementById('userInitials').textContent = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            document.getElementById('userRoleBadge').textContent = currentProfile.role === 'teacher' ? '👩‍🏫 Teacher' : '🎓 Student';
+
+            // Basic fields
+            document.getElementById('pName').value = currentProfile.full_name || '';
+            document.getElementById('pEmail').value = currentUser.email || '';
+
+            // Student fields
+            if (currentProfile.role === 'student') {
+                document.getElementById('studentFields').style.display = 'block';
+                document.getElementById('pRoll').value = currentProfile.roll_number || '';
+                document.getElementById('pBranch').value = currentProfile.branch || '';
+                document.getElementById('pClass').value = currentProfile.class_name || '';
+                document.getElementById('pSection').value = currentProfile.section || '';
+            }
+        }
+
+        function renderNav() {
+            const isTeacher = currentProfile.role === 'teacher';
+            const nav = document.getElementById('botNav');
+            if (isTeacher) {
+                nav.innerHTML = `
+          <button class="nav-tab" onclick="window.location.href='teacher.html'">
+            <span class="ni">📡</span><span class="nl">Session</span>
+          </button>
+          <button class="nav-tab" onclick="window.location.href='teacher-dashboard.html'">
+            <span class="ni">📊</span><span class="nl">Dashboard</span>
+          </button>
+          <button class="nav-tab active">
+            <span class="ni">👤</span><span class="nl">Profile</span>
+          </button>
+        `;
+            } else {
+                nav.innerHTML = `
+          <button class="nav-tab" onclick="window.location.href='index.html'">
+            <span class="ni">📍</span><span class="nl">Mark</span>
+          </button>
+          <button class="nav-tab" onclick="window.location.href='student-dashboard.html'">
+            <span class="ni">📊</span><span class="nl">History</span>
+          </button>
+          <button class="nav-tab active">
+            <span class="ni">👤</span><span class="nl">Profile</span>
+          </button>
+        `;
+            }
+        }
+
+        window.saveProfile = async () => {
+            const updates = { full_name: document.getElementById('pName').value.trim() };
+
+            if (currentProfile.role === 'student') {
+                updates.roll_number = document.getElementById('pRoll').value.trim();
+                updates.branch = document.getElementById('pBranch').value;
+                updates.class_name = document.getElementById('pClass').value;
+                updates.section = document.getElementById('pSection').value.trim();
+            }
+
+            if (!updates.full_name) { showAlert('error', '❌ Name cannot be empty.'); return; }
+
+            setBtnLoading(true);
+            try {
+                currentProfile = await updateProfile(updates);
+                populateData(); // refresh initials
+                showAlert('success', '✅ Profile updated successfully!');
+            } catch (err) {
+                showAlert('error', '❌ ' + err.message);
+            } finally {
+                setBtnLoading(false);
+            }
+        };
+
+        window.doSignOut = async () => {
+            await signOut();
+            window.location.href = 'login.html';
+        };
+
+        function showAlert(type, msg) {
+            const el = document.getElementById('alertBox');
+            el.className = `alert alert-${type} show`;
+            el.innerHTML = `<span></span><span>${msg}</span>`;
+            setTimeout(() => { el.classList.remove('show'); }, 4000);
+        }
+
+        function setBtnLoading(loading) {
+            document.getElementById('saveBtnText').textContent = loading ? 'Saving...' : '💾 Save Changes';
+            document.getElementById('saveSpinner').className = loading ? 'spinner active' : 'spinner';
+        }
+    </script>
+</body>
+
+</html>

@@ -63,6 +63,20 @@ export async function getProfile() {
     return data;
 }
 
+// Update current user profile
+export async function updateProfile(updates) {
+    const session = await getSession();
+    if (!session) throw new Error("Not logged in");
+    const { data, error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', session.user.id)
+        .select()
+        .single();
+    if (error) throw error;
+    return data;
+}
+
 // Auth guard
 export async function requireAuth(redirectTo = 'login.html') {
     const session = await getSession();
